@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.github.asm0dey.meilisearch-demo</groupId>
+        <groupId>com.bell-sw.demo</groupId>
         <artifactId>hero-guide-demo-app</artifactId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
