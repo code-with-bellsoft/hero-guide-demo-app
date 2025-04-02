@@ -101,3 +101,29 @@ The application includes the following performance optimizations:
 
 - Spring Boot Actuator endpoints for monitoring
 - Health, info, and metrics endpoints
+
+## Recent Changes
+
+The following improvements were made to the application:
+
+### Authentication and User Management
+- Implemented form-based authentication with 3 default users (user1/pass1, user2/pass2, user3/pass3, admin1/adminpass1)
+- Added automatic session creation for authenticated users
+- Fixed user session management to properly associate users with their chat sessions
+
+### WebSocket Communication
+- Fixed WebSocket connection handling for authenticated users
+- Improved connect/disconnect button functionality
+- Ensured proper session ID usage in WebSocket communication
+- Added test to verify WebSocket message handling and bot responses
+
+### Configuration
+- Updated bot.assistant.url property to use environment variable with sensible default
+- Fixed HTML structure in templates
+- Improved error handling in WebSocket communication
+
+### Bug Fixes
+- Fixed issue where Optional<ChatSession> was always empty in ChatWebSocketController
+- Fixed session creation logic to ensure users always have a valid session
+- Fixed inactive disconnect button
+- Fixed connect button not working after authentication
