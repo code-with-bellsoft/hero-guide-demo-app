@@ -11,32 +11,32 @@
     <script defer src="/webjars/fontawesome/5.6.3/js/all.js"></script>
 </head>
 <body>
-    <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="/">
-                <strong>Chat Application</strong>
-            </a>
+<nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+            <strong>Chat Application</strong>
+        </a>
+    </div>
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="/">Home</a>
+            <a class="navbar-item" href="/chat">Chat</a>
         </div>
-        <div class="navbar-menu">
-            <div class="navbar-start">
-                <a class="navbar-item" href="/">Home</a>
-                <a class="navbar-item" href="/chat">Chat</a>
-            </div>
-        </div>
-    </nav>
+    </div>
+</nav>
 
-    <section class="section">
-        <div class="container">
-            ${content}
-        </div>
-    </section>
+<section class="section">
+    <div class="container">
+        ${content}
+    </div>
+</section>
 
-    <footer class="footer">
-        <div class="content has-text-centered">
-            <p>
-                <strong>Chat Application</strong> powered by Spring Boot and jte.
-            </p>
-        </div>
-    </footer>
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p>
+            <strong>Chat Application</strong> powered by Spring Boot and jte.
+        </p>
+    </div>
+</footer>
 </body>
 </html>

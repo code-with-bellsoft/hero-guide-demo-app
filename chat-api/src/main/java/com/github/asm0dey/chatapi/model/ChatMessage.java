@@ -43,22 +43,6 @@ public class ChatMessage {
     public ChatMessage() {
     }
 
-    /**
-     * Constructor with all fields.
-     */
-    public ChatMessage(String id, String sessionId, String senderId, String senderName, 
-                      MessageType type, String content, LocalDateTime timestamp, 
-                      boolean processedByBot) {
-        this.id = id;
-        this.sessionId = sessionId;
-        this.senderId = senderId;
-        this.senderName = senderName;
-        this.type = type;
-        this.content = content;
-        this.timestamp = timestamp;
-        this.processedByBot = processedByBot;
-    }
-
     // Getters and Setters
     public String getId() {
         return id;
@@ -168,68 +152,4 @@ public class ChatMessage {
         BOT         // Message from bot assistant
     }
 
-    /**
-     * Builder for ChatMessage.
-     */
-    public static class Builder {
-        private String id;
-        private String sessionId;
-        private String senderId;
-        private String senderName;
-        private MessageType type;
-        private String content;
-        private LocalDateTime timestamp;
-        private boolean processedByBot = false;
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder sessionId(String sessionId) {
-            this.sessionId = sessionId;
-            return this;
-        }
-
-        public Builder senderId(String senderId) {
-            this.senderId = senderId;
-            return this;
-        }
-
-        public Builder senderName(String senderName) {
-            this.senderName = senderName;
-            return this;
-        }
-
-        public Builder type(MessageType type) {
-            this.type = type;
-            return this;
-        }
-
-        public Builder content(String content) {
-            this.content = content;
-            return this;
-        }
-
-        public Builder timestamp(LocalDateTime timestamp) {
-            this.timestamp = timestamp;
-            return this;
-        }
-
-        public Builder processedByBot(boolean processedByBot) {
-            this.processedByBot = processedByBot;
-            return this;
-        }
-
-        public ChatMessage build() {
-            return new ChatMessage(id, sessionId, senderId, senderName, type, content, timestamp, processedByBot);
-        }
-    }
-
-    /**
-     * Create a new builder instance.
-     */
-    public static Builder builder() {
-        return new Builder();
-    }
 }

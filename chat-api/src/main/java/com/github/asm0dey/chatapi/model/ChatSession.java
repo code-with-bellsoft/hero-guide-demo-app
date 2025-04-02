@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Represents a chat session between users.
@@ -53,9 +52,9 @@ public class ChatSession {
      * Constructor with all fields.
      */
     public ChatSession(String id, String name, String description, String createdBy,
-                      List<String> participants, boolean isActive, LocalDateTime createdAt,
-                      LocalDateTime updatedAt, LocalDateTime lastMessageAt, boolean isPrivate,
-                      boolean botEnabled) {
+                       List<String> participants, boolean isActive, LocalDateTime createdAt,
+                       LocalDateTime updatedAt, LocalDateTime lastMessageAt, boolean isPrivate,
+                       boolean botEnabled) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -67,6 +66,13 @@ public class ChatSession {
         this.lastMessageAt = lastMessageAt;
         this.isPrivate = isPrivate;
         this.botEnabled = botEnabled;
+    }
+
+    /**
+     * Create a new builder instance.
+     */
+    public static Builder builder() {
+        return new Builder();
     }
 
     // Getters and Setters
@@ -158,7 +164,6 @@ public class ChatSession {
         this.botEnabled = botEnabled;
     }
 
-
     /**
      * Builder for ChatSession.
      */
@@ -234,12 +239,5 @@ public class ChatSession {
             return new ChatSession(id, name, description, createdBy, participants, isActive,
                     createdAt, updatedAt, lastMessageAt, isPrivate, botEnabled);
         }
-    }
-
-    /**
-     * Create a new builder instance.
-     */
-    public static Builder builder() {
-        return new Builder();
     }
 }

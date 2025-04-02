@@ -46,7 +46,7 @@ public class BotAssistantService {
     public void processMessage(ChatMessage message) {
         log.info("Processing message with bot assistant: {}", message.getContent());
         log.debug("Bot assistant URL: {}", botAssistantUrl);
-        log.debug("Message details: id={}, sessionId={}, type={}, sender={}", 
+        log.debug("Message details: id={}, sessionId={}, type={}, sender={}",
                 message.getId(), message.getSessionId(), message.getType(), message.getSenderName());
 
         // Mark the message as being processed by the bot

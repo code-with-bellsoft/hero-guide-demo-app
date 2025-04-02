@@ -27,7 +27,7 @@ public class DataInitializer {
     /**
      * Creates default users if they don't exist.
      *
-     * @param userRepository the user repository
+     * @param userRepository  the user repository
      * @param passwordEncoder the password encoder
      * @return a CommandLineRunner that initializes data
      */
@@ -54,14 +54,14 @@ public class DataInitializer {
     /**
      * Creates a default user if it doesn't exist.
      *
-     * @param userRepository the user repository
+     * @param userRepository  the user repository
      * @param passwordEncoder the password encoder
-     * @param username the username
-     * @param password the password
-     * @param roles the roles to assign to the user
+     * @param username        the username
+     * @param password        the password
+     * @param roles           the roles to assign to the user
      */
-    private void createDefaultUserIfNotExists(UserRepository userRepository, PasswordEncoder passwordEncoder, 
-                                             String username, String password, Set<String> roles) {
+    private void createDefaultUserIfNotExists(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                                              String username, String password, Set<String> roles) {
         if (!userRepository.existsByUsername(username)) {
             User user = User.builder()
                     .username(username)
@@ -84,13 +84,13 @@ public class DataInitializer {
     /**
      * Creates a default user if it doesn't exist with USER role.
      *
-     * @param userRepository the user repository
+     * @param userRepository  the user repository
      * @param passwordEncoder the password encoder
-     * @param username the username
-     * @param password the password
+     * @param username        the username
+     * @param password        the password
      */
-    private void createDefaultUserIfNotExists(UserRepository userRepository, PasswordEncoder passwordEncoder, 
-                                             String username, String password) {
+    private void createDefaultUserIfNotExists(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                                              String username, String password) {
         createDefaultUserIfNotExists(userRepository, passwordEncoder, username, password, Set.of("USER"));
     }
 }

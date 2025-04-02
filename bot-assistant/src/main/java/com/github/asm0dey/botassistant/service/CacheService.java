@@ -54,7 +54,7 @@ public class CacheService {
     /**
      * Cache a response for a message.
      *
-     * @param message the message
+     * @param message  the message
      * @param response the response to cache
      */
     public void cacheResponse(ChatMessage message, ChatMessage response) {

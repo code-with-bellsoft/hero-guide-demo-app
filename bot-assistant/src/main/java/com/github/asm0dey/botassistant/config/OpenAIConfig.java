@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration for OpenAI API integration.
- * 
+ * <p>
  * Note: Spring AI auto-configuration will handle the creation of the OpenAI client
  * based on properties in application.properties.
  */

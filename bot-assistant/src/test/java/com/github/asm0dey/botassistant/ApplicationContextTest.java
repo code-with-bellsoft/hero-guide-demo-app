@@ -13,6 +13,7 @@ class ApplicationContextTest {
     @Container
     @ServiceConnection
     static RedisContainer redis = new RedisContainer("redis");
+
     @Test
     void contextLoads() {
     }

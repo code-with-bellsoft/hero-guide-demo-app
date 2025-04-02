@@ -24,7 +24,7 @@ public class WebSocketEventListener {
     private final ChatMessageRepository chatMessageRepository;
 
     public WebSocketEventListener(SimpMessageSendingOperations messagingTemplate,
-                                 ChatMessageRepository chatMessageRepository) {
+                                  ChatMessageRepository chatMessageRepository) {
         this.messagingTemplate = messagingTemplate;
         this.chatMessageRepository = chatMessageRepository;
     }
@@ -38,14 +38,14 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        
+
         // Get username and session ID from WebSocket session attributes
         String username = (String) headerAccessor.getSessionAttributes().get("username");
         String sessionId = (String) headerAccessor.getSessionAttributes().get("sessionId");
-        
+
         if (username != null && sessionId != null) {
             log.info("User {} disconnected from session {}", username, sessionId);
-            
+
             // Create leave message
             ChatMessage leaveMessage = new ChatMessage();
             leaveMessage.setType(ChatMessage.MessageType.LEAVE);
@@ -53,10 +53,10 @@ public class WebSocketEventListener {
             leaveMessage.setSessionId(sessionId);
             leaveMessage.setTimestamp(LocalDateTime.now());
             leaveMessage.setContent(username + " left the chat");
-            
+
             // Save the leave message
             chatMessageRepository.save(leaveMessage);
-            
+
             // Send leave message to the session
             messagingTemplate.convertAndSend("/topic/chat/" + sessionId, leaveMessage);
         }

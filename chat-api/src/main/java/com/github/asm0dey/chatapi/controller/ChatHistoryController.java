@@ -54,8 +54,8 @@ public class ChatHistoryController {
      * Get paginated messages for a specific chat session.
      *
      * @param sessionId the session ID
-     * @param page the page number (0-based)
-     * @param size the page size
+     * @param page      the page number (0-based)
+     * @param size      the page size
      * @return a page of chat messages
      */
     @GetMapping("/{sessionId}/page")

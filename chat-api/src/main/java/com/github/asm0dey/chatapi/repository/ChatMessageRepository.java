@@ -27,18 +27,10 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
      * Find messages by session ID with pagination.
      *
      * @param sessionId the session ID
-     * @param pageable pagination information
+     * @param pageable  pagination information
      * @return a page of messages for the session
      */
     Page<ChatMessage> findBySessionId(String sessionId, Pageable pageable);
-
-    /**
-     * Find messages by sender ID.
-     *
-     * @param senderId the sender ID
-     * @return a list of messages from the sender
-     */
-    List<ChatMessage> findBySenderId(String senderId);
 
     /**
      * Find messages by session ID and timestamp after a given time.
@@ -48,14 +40,6 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
      * @return a list of messages for the session after the given timestamp
      */
     List<ChatMessage> findBySessionIdAndTimestampAfter(String sessionId, LocalDateTime timestamp);
-
-    /**
-     * Find messages that need to be processed by the bot.
-     *
-     * @param processedByBot flag indicating if the message has been processed by the bot
-     * @return a list of messages that need bot processing
-     */
-    List<ChatMessage> findByProcessedByBot(boolean processedByBot);
 
     /**
      * Count messages by session ID.

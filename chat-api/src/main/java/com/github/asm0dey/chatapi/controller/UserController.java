@@ -90,7 +90,7 @@ public class UserController {
     /**
      * Update a user.
      *
-     * @param id the user ID
+     * @param id          the user ID
      * @param userDetails the updated user details
      * @return the updated user
      */
@@ -106,7 +106,7 @@ public class UserController {
         }
         if (userDetails.getEmail() != null) {
             // Check if email is already used by another user
-            if (!user.getEmail().equals(userDetails.getEmail()) && 
+            if (!user.getEmail().equals(userDetails.getEmail()) &&
                     userRepository.existsByEmail(userDetails.getEmail())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
             }

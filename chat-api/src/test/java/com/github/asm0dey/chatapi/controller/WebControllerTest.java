@@ -1,13 +1,10 @@
 package com.github.asm0dey.chatapi.controller;
 
-import com.github.asm0dey.chatapi.repository.ChatSessionRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
@@ -49,6 +46,7 @@ public class WebControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("chat-view"));
     }
+
     /**
      * Test the index endpoint with a different name.
      */

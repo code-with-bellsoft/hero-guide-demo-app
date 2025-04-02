@@ -47,25 +47,19 @@ public class ChatWebSocketControllerTest {
     @Container
     @ServiceConnection
     private static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
-
+    private final String username = "testUser";
     @LocalServerPort
     private int port;
-
     @Autowired
     private ChatMessageRepository chatMessageRepository;
-
     @Autowired
     private ChatSessionRepository chatSessionRepository;
-
     @Autowired
     private org.springframework.messaging.simp.SimpMessagingTemplate messagingTemplate;
-
     @MockitoBean
     private BotAssistantService botAssistantService;
-
     private WebSocketStompClient stompClient;
     private String sessionId;
-    private final String username = "testUser";
 
     @BeforeEach
     public void setup() {
@@ -134,7 +128,8 @@ public class ChatWebSocketControllerTest {
 
         // Connect to WebSocket
         String wsUrl = "ws://localhost:" + port + "/ws";
-        StompSession session = stompClient.connectAsync(wsUrl, new StompSessionHandlerAdapter() {}).get(5, TimeUnit.SECONDS);
+        StompSession session = stompClient.connectAsync(wsUrl, new StompSessionHandlerAdapter() {
+        }).get(5, TimeUnit.SECONDS);
         System.out.println("[DEBUG_LOG] Connected to WebSocket at " + wsUrl);
 
         // Subscribe to the topic (even though we won't receive messages in the test)

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -130,7 +129,7 @@ public class ChatSessionController {
     /**
      * Update a chat session.
      *
-     * @param id the session ID
+     * @param id             the session ID
      * @param sessionDetails the updated session details
      * @return the updated session
      */
@@ -175,7 +174,7 @@ public class ChatSessionController {
     /**
      * Add a participant to a chat session.
      *
-     * @param id the session ID
+     * @param id       the session ID
      * @param username the username of the participant to add
      * @return the updated session
      */
@@ -214,7 +213,7 @@ public class ChatSessionController {
     /**
      * Remove a participant from a chat session.
      *
-     * @param id the session ID
+     * @param id     the session ID
      * @param userId the user ID of the participant to remove
      * @return the updated session
      */

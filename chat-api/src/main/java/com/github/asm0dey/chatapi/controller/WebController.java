@@ -143,7 +143,7 @@ public class WebController {
     /**
      * Renders the admin chat history page.
      *
-     * @param model the model
+     * @param model     the model
      * @param sessionId optional session ID to filter messages
      * @return the view name
      */

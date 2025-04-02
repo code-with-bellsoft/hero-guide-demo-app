@@ -53,7 +53,7 @@ public class User {
      * Constructor with all fields.
      */
     public User(String id, String username, String password, String email, String displayName,
-               Set<String> roles, boolean enabled, LocalDateTime createdAt, LocalDateTime updatedAt) {
+                Set<String> roles, boolean enabled, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -63,6 +63,13 @@ public class User {
         this.enabled = enabled;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    /**
+     * Create a new builder instance.
+     */
+    public static Builder builder() {
+        return new Builder();
     }
 
     // Getters and Setters
@@ -236,12 +243,5 @@ public class User {
         public User build() {
             return new User(id, username, password, email, displayName, roles, enabled, createdAt, updatedAt);
         }
-    }
-
-    /**
-     * Create a new builder instance.
-     */
-    public static Builder builder() {
-        return new Builder();
     }
 }

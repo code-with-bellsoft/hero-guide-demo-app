@@ -22,44 +22,37 @@ public class ChatService {
 
     private final WebClient.Builder webClientBuilder;
     private final CacheService cacheService;
+    private final AtomicLong totalRequests = new AtomicLong(0);
+    private final AtomicLong aiRequests = new AtomicLong(0);
+    private final AtomicLong errorCount = new AtomicLong(0);
+    private final AtomicLong totalTokens = new AtomicLong(0);
+    // List of preprogrammed answers to use when OpenAI API key is not available
+    private final List<String> preprogrammedAnswers = List.of(
+            "I'm currently operating in offline mode. Could you try again later when I'm back online?",
+            "I'm sorry, but I'm currently unable to access my full capabilities. I'll be back to normal soon!",
+            "I'm in energy-saving mode right now. Please check back later when I'm fully powered up.",
+            "My connection to the cloud is temporarily unavailable. I can only provide basic responses at the moment.",
+            "I'm currently running on my backup system. I'll have my full intelligence restored shortly.",
+            "I'm operating with limited functionality right now. Please try again later for a more comprehensive response.",
+            "I'm currently in maintenance mode. I'll be back with my full capabilities soon!",
+            "I can only provide simple responses right now as I'm temporarily disconnected from my knowledge base.",
+            "I'm working with reduced capabilities at the moment. Please check back later when I'm fully operational.",
+            "My advanced reasoning module is currently offline. I'll be back to normal operations soon!"
+    );
+    private final Random random = new Random();
+    @Value("${spring.ai.openai.api-key}")
+    private String openaiApiKey;
+    @Value("${spring.ai.openai.base-url:https://api.openai.com}")
+    private String openaiBaseUrl;
+    @Value("${spring.ai.openai.model:gpt-3.5-turbo}")
+    private String model;
+    @Value("${bot.system-prompt:You are a helpful assistant that provides concise and accurate information.}")
+    private String systemPrompt;
 
     public ChatService(WebClient.Builder webClientBuilder, CacheService cacheService) {
         this.webClientBuilder = webClientBuilder;
         this.cacheService = cacheService;
     }
-
-    @Value("${spring.ai.openai.api-key}")
-    private String openaiApiKey;
-
-    @Value("${spring.ai.openai.base-url:https://api.openai.com}")
-    private String openaiBaseUrl;
-
-    @Value("${spring.ai.openai.model:gpt-3.5-turbo}")
-    private String model;
-
-    @Value("${bot.system-prompt:You are a helpful assistant that provides concise and accurate information.}")
-    private String systemPrompt;
-
-    private final AtomicLong totalRequests = new AtomicLong(0);
-    private final AtomicLong aiRequests = new AtomicLong(0);
-    private final AtomicLong errorCount = new AtomicLong(0);
-    private final AtomicLong totalTokens = new AtomicLong(0);
-
-    // List of preprogrammed answers to use when OpenAI API key is not available
-    private final List<String> preprogrammedAnswers = List.of(
-        "I'm currently operating in offline mode. Could you try again later when I'm back online?",
-        "I'm sorry, but I'm currently unable to access my full capabilities. I'll be back to normal soon!",
-        "I'm in energy-saving mode right now. Please check back later when I'm fully powered up.",
-        "My connection to the cloud is temporarily unavailable. I can only provide basic responses at the moment.",
-        "I'm currently running on my backup system. I'll have my full intelligence restored shortly.",
-        "I'm operating with limited functionality right now. Please try again later for a more comprehensive response.",
-        "I'm currently in maintenance mode. I'll be back with my full capabilities soon!",
-        "I can only provide simple responses right now as I'm temporarily disconnected from my knowledge base.",
-        "I'm working with reduced capabilities at the moment. Please check back later when I'm fully operational.",
-        "My advanced reasoning module is currently offline. I'll be back to normal operations soon!"
-    );
-
-    private final Random random = new Random();
 
     /**
      * Process a chat message and generate a response.
