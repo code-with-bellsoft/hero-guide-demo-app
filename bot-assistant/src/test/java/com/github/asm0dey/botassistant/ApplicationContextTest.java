@@ -10,7 +10,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest
 @Testcontainers
 class ApplicationContextTest {
-    @SuppressWarnings("unused")
     @Container
     @ServiceConnection
     static RedisContainer redis = new RedisContainer("redis");

@@ -1,6 +1,7 @@
 package com.github.asm0dey.botassistant.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.data.redis.RedisConnectionDetails;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,15 +23,6 @@ import java.time.Duration;
 @Configuration
 public class RedisConfig {
 
-    @Value("${spring.redis.host:localhost}")
-    private String redisHost;
-
-    @Value("${spring.redis.port:6379}")
-    private int redisPort;
-
-    @Value("${spring.redis.password:}")
-    private String redisPassword;
-
     @Value("${spring.cache.redis.time-to-live:3600}")
     private long timeToLive;
 
@@ -38,12 +30,12 @@ public class RedisConfig {
      * Redis connection factory.
      */
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
+    public RedisConnectionFactory redisConnectionFactory(RedisConnectionDetails redisConnectionDetails) {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
-        redisConfig.setHostName(redisHost);
-        redisConfig.setPort(redisPort);
-        if (!redisPassword.isEmpty()) {
-            redisConfig.setPassword(redisPassword);
+        redisConfig.setHostName(redisConnectionDetails.getStandalone().getHost());
+        redisConfig.setPort(redisConnectionDetails.getStandalone().getPort());
+        if (redisConnectionDetails.getPassword() != null && !redisConnectionDetails.getPassword().isEmpty()) {
+            redisConfig.setPassword(redisConnectionDetails.getPassword());
         }
         return new LettuceConnectionFactory(redisConfig);
     }
@@ -52,9 +44,9 @@ public class RedisConfig {
      * Redis template for operations.
      */
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionDetails redisConnectionDetails) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory());
+        template.setConnectionFactory(redisConnectionFactory(redisConnectionDetails));
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
@@ -66,7 +58,7 @@ public class RedisConfig {
      * Cache manager for Redis.
      */
     @Bean
-    public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+    public CacheManager cacheManager(RedisConnectionFactory connectionFactory, RedisConnectionDetails redisConnectionDetails) {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofSeconds(timeToLive))
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
