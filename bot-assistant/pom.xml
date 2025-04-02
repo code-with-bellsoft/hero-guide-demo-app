@@ -66,7 +66,7 @@
         <!-- FontAwesome -->
         <dependency>
             <groupId>org.webjars.npm</groupId>
-            <artifactId>fontawesome</artifactId>
+            <artifactId>fortawesome__fontawesome-free</artifactId>
         </dependency>
 
         <!-- Testing -->

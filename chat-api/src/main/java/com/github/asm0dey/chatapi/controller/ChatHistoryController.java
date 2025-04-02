@@ -26,6 +26,18 @@ public class ChatHistoryController {
     }
 
     /**
+     * Get all messages across all sessions (admin only).
+     *
+     * @return a list of all chat messages
+     */
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ChatMessage>> getAllMessages() {
+        List<ChatMessage> messages = chatMessageRepository.findAll();
+        return ResponseEntity.ok(messages);
+    }
+
+    /**
      * Get all messages for a specific chat session.
      *
      * @param sessionId the session ID

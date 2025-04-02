@@ -4,15 +4,18 @@ import com.github.asm0dey.chatapi.model.ChatSession;
 import com.github.asm0dey.chatapi.model.User;
 import com.github.asm0dey.chatapi.repository.ChatSessionRepository;
 import com.github.asm0dey.chatapi.repository.UserRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -36,17 +39,10 @@ public class WebController {
      * @return the view name
      */
     @GetMapping("/")
-    public String index(Model model) {
+    public String index(Model model, Authentication authentication) {
         model.addAttribute("title", "Chat Application - Home");
 
-        // Add authentication information to the model
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            model.addAttribute("authenticated", true);
-            model.addAttribute("username", authentication.getName());
-        } else {
-            model.addAttribute("authenticated", false);
-        }
+        addAuthDataToModel(model, authentication);
 
         return "index";
     }
@@ -58,15 +54,14 @@ public class WebController {
      * @return the view name
      */
     @GetMapping("/chat")
-    public String chatView(Model model) {
+    public String chatView(Model model, Authentication authentication) {
         model.addAttribute("title", "Chat Application - Chat");
 
-        // Add authentication information to the model
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
+        if (authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser")) {
             String username = authentication.getName();
             model.addAttribute("authenticated", true);
             model.addAttribute("username", username);
+            model.addAttribute("isAdmin", isAdmin(authentication));
 
             // Find the user's ID
             Optional<User> userOpt = userRepository.findByUsername(username);
@@ -127,5 +122,79 @@ public class WebController {
             model.addAttribute("error", "Invalid username or password");
         }
         return "login";
+    }
+
+    /**
+     * Renders the admin sessions page.
+     *
+     * @param model the model
+     * @return the view name
+     */
+    @GetMapping("/admin/sessions")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminSessionsView(Model model, Authentication authentication) {
+        model.addAttribute("title", "Admin - Sessions");
+
+        addAuthDataToModel(model, authentication);
+
+        return "sessions-admin";
+    }
+
+    /**
+     * Renders the admin chat history page.
+     *
+     * @param model the model
+     * @param sessionId optional session ID to filter messages
+     * @return the view name
+     */
+    @GetMapping({"/admin/chat/history", "/admin/chat/history/{sessionId}"})
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminChatHistoryView(Model model, @PathVariable(required = false) String sessionId, Authentication authentication) {
+        model.addAttribute("title", "Admin - Chat History");
+
+        addAuthDataToModel(model, authentication);
+
+        model.addAttribute("sessionId", Objects.requireNonNullElse(sessionId, ""));
+
+        return "chat-history-admin";
+    }
+
+    /**
+     * Renders the admin users page.
+     *
+     * @param model the model
+     * @return the view name
+     */
+    @GetMapping("/admin/users")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminUsersView(Model model, Authentication authentication) {
+        model.addAttribute("title", "Admin - Users");
+
+        addAuthDataToModel(model, authentication);
+
+        return "users-admin";
+    }
+
+    private void addAuthDataToModel(Model model, Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser")) {
+            model.addAttribute("authenticated", true);
+            model.addAttribute("username", authentication.getName());
+            model.addAttribute("isAdmin", isAdmin(authentication));
+        } else {
+            model.addAttribute("authenticated", false);
+            model.addAttribute("isAdmin", false);
+        }
+    }
+
+    /**
+     * Check if the user has the ADMIN role.
+     *
+     * @param authentication the authentication object
+     * @return true if the user is an admin, false otherwise
+     */
+    private boolean isAdmin(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(authority -> authority.toUpperCase().contains("ROLE_ADMIN"));
     }
 }

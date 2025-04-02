@@ -49,6 +49,18 @@ public class ChatSessionController {
     }
 
     /**
+     * Get all chat sessions (admin only).
+     *
+     * @return a list of all chat sessions
+     */
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ChatSession>> getAllSessions() {
+        List<ChatSession> sessions = chatSessionRepository.findAll();
+        return ResponseEntity.ok(sessions);
+    }
+
+    /**
      * Get paginated chat sessions for the authenticated user.
      *
      * @param page the page number (0-based)

@@ -1,6 +1,7 @@
 @param String title = "Chat Application"
 @param Boolean authenticated = false
 @param String username = ""
+@param Boolean isAdmin = false
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     <link rel="stylesheet" href="/webjars/bulma/1.0.3/css/bulma.min.css">
-    <script defer src="/webjars/fontawesome/5.6.3/index.js"></script>
+    <link rel="stylesheet" href="/webjars/fortawesome__fontawesome-free/6.7.2/css/all.min.css">
 </head>
 <body>
     <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
@@ -22,6 +23,16 @@
             <div class="navbar-start">
                 <a class="navbar-item" href="/">Home</a>
                 <a class="navbar-item" href="/chat">Chat</a>
+                @if(isAdmin)
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">Admin</a>
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" href="/admin/sessions">Sessions</a>
+                            <a class="navbar-item" href="/admin/chat/history">Chat History</a>
+                            <a class="navbar-item" href="/admin/users">Users</a>
+                        </div>
+                    </div>
+                @endif
             </div>
             <div class="navbar-end">
                 <div class="navbar-item">
