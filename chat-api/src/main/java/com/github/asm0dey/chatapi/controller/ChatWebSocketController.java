@@ -15,6 +15,8 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,8 +31,8 @@ public class ChatWebSocketController {
     private final BotAssistantService botAssistantService;
 
     public ChatWebSocketController(ChatMessageRepository chatMessageRepository,
-                                  ChatSessionRepository chatSessionRepository,
-                                  BotAssistantService botAssistantService) {
+                                   ChatSessionRepository chatSessionRepository,
+                                   BotAssistantService botAssistantService) {
         this.chatMessageRepository = chatMessageRepository;
         this.chatSessionRepository = chatSessionRepository;
         this.botAssistantService = botAssistantService;
@@ -39,7 +41,7 @@ public class ChatWebSocketController {
     /**
      * Handle chat messages sent to a specific session.
      *
-     * @param sessionId the session ID
+     * @param sessionId   the session ID
      * @param chatMessage the chat message
      * @return the chat message to be broadcast to subscribers
      */
@@ -47,9 +49,17 @@ public class ChatWebSocketController {
     @SendTo("/topic/chat/{sessionId}")
     public ChatMessage sendMessage(
             @DestinationVariable String sessionId,
-            @Payload ChatMessage chatMessage) {
+            @Payload ChatMessage chatMessage,
+            SimpMessageHeaderAccessor headerAccessor) {
 
         log.info("Received message for session {}: {}", sessionId, chatMessage.getContent());
+
+        // Get authenticated user if available
+        String username = null;
+        if (headerAccessor.getUser() != null) {
+            username = headerAccessor.getUser().getName();
+            log.debug("Authenticated user: {}", username);
+        }
 
         // Set session ID and timestamp
         chatMessage.setSessionId(sessionId);
@@ -60,13 +70,45 @@ public class ChatWebSocketController {
 
         // Update the last message timestamp in the session
         Optional<ChatSession> sessionOpt = chatSessionRepository.findById(sessionId);
-        sessionOpt.ifPresent(session -> {
+
+        // If session doesn't exist, create it
+        if (sessionOpt.isEmpty()) {
+            log.info("Creating new chat session with ID: {}", sessionId);
+
+            // Create a list of participants
+            List<String> participants = new ArrayList<>();
+            if (username != null) {
+                participants.add(username);
+            }
+
+            LocalDateTime now = LocalDateTime.now();
+
+            // Use the Builder pattern to create a new ChatSession
+            ChatSession newSession = ChatSession.builder()
+                    .id(sessionId)
+                    .name("Chat Session")
+                    .description("Automatically created chat session")
+                    .createdBy(username != null ? username : "system")
+                    .participants(participants)
+                    .isActive(true)
+                    .createdAt(now)
+                    .updatedAt(now)
+                    .lastMessageAt(now)
+                    .isPrivate(false)
+                    .botEnabled(true)
+                    .build();
+
+            sessionOpt = Optional.of(chatSessionRepository.save(newSession));
+            log.info("Created new chat session: {}", newSession);
+        } else {
+            // Update existing session
+            ChatSession session = sessionOpt.get();
             session.setLastMessageAt(LocalDateTime.now());
             chatSessionRepository.save(session);
-        });
+        }
 
         // Process message with bot assistant if enabled for this session
-        if (sessionOpt.isPresent() && sessionOpt.get().isBotEnabled() && 
+        if (sessionOpt.get().isBotEnabled() &&
                 chatMessage.getType() == ChatMessage.MessageType.CHAT) {
             botAssistantService.processMessage(savedMessage);
         }
@@ -77,8 +119,8 @@ public class ChatWebSocketController {
     /**
      * Handle user join events.
      *
-     * @param sessionId the session ID
-     * @param chatMessage the join message
+     * @param sessionId      the session ID
+     * @param chatMessage    the join message
      * @param headerAccessor the message headers
      * @return the join message to be broadcast to subscribers
      */

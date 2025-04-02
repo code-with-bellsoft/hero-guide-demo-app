@@ -9,15 +9,14 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Testcontainers
 @SpringBootTest
@@ -44,10 +43,20 @@ public class WebControllerTest {
      * Test the index endpoint with a different name.
      */
     @Test
+    @WithUserDetails("user1")
     public void testChatEndpoint() throws Exception {
         mockMvc.perform(get("/chat"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("chat-view"));
+    }
+    /**
+     * Test the index endpoint with a different name.
+     */
+    @Test
+    public void testChatEndpointRedirects() throws Exception {
+        mockMvc.perform(get("/chat"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
     }
 
     /**

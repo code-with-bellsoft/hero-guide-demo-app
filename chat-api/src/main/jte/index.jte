@@ -1,4 +1,6 @@
 @param String title = "Chat Application"
+@param Boolean authenticated = false
+@param String username = ""
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,6 +22,24 @@
             <div class="navbar-start">
                 <a class="navbar-item" href="/">Home</a>
                 <a class="navbar-item" href="/chat">Chat</a>
+            </div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    @if(authenticated)
+                        <div class="buttons">
+                            <span class="navbar-item">Welcome, ${username}</span>
+                            <a class="button is-light" href="/logout">
+                                <strong>Logout</strong>
+                            </a>
+                        </div>
+                    @else
+                        <div class="buttons">
+                            <a class="button is-primary" href="/login">
+                                <strong>Login</strong>
+                            </a>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </nav>
