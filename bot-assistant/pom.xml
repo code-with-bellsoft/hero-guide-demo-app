@@ -47,6 +47,28 @@
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
+        <!-- jte template engine -->
+        <dependency>
+            <groupId>gg.jte</groupId>
+            <artifactId>jte-spring-boot-starter-3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gg.jte</groupId>
+            <artifactId>jte</artifactId>
+        </dependency>
+
+        <!-- Bulma CSS framework -->
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>bulma</artifactId>
+        </dependency>
+
+        <!-- FontAwesome -->
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>fontawesome</artifactId>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>io.projectreactor</groupId>
@@ -65,6 +87,18 @@
             <version>1.19.3</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.redis</groupId>
+            <artifactId>testcontainers-redis</artifactId>
+            <version>2.2.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -72,6 +106,24 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>gg.jte</groupId>
+                <artifactId>jte-maven-plugin</artifactId>
+                <version>${jte.version}</version>
+                <configuration>
+                    <sourceDirectory>${project.basedir}/src/main/jte</sourceDirectory>
+                    <targetDirectory>${project.build.directory}/jte-classes</targetDirectory>
+                    <contentType>Html</contentType>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>precompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

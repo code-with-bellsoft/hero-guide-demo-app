@@ -12,8 +12,8 @@ COPY .mvn/ .mvn/
 COPY mvnw ./
 COPY pom.xml ./
 COPY bot-assistant/pom.xml ./bot-assistant/
-COPY bot-assistant/src/ ./bot-assistant/src/
 COPY chat-api/pom.xml ./chat-api/pom.xml
+COPY bot-assistant/src/ ./bot-assistant/src/
 
 # Build the application
 RUN ./mvnw package -pl bot-assistant -am -DskipTests

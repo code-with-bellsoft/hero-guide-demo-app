@@ -27,6 +27,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-ai.version>1.0.0-SNAPSHOT</spring-ai.version>
+        <jte.version>3.2.0</jte.version>
     </properties>
 
     <dependencyManagement>
@@ -38,6 +39,32 @@
                 <version>${spring-ai.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- jte template engine -->
+            <dependency>
+                <groupId>gg.jte</groupId>
+                <artifactId>jte-spring-boot-starter-3</artifactId>
+                <version>${jte.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>gg.jte</groupId>
+                <artifactId>jte</artifactId>
+                <version>${jte.version}</version>
+            </dependency>
+
+            <!-- Bulma CSS framework -->
+            <dependency>
+                <groupId>org.webjars.npm</groupId>
+                <artifactId>bulma</artifactId>
+                <version>1.0.3</version>
+            </dependency>
+
+            <!-- FontAwesome -->
+            <dependency>
+                <groupId>org.webjars.npm</groupId>
+                <artifactId>fontawesome</artifactId>
+                <version>5.6.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

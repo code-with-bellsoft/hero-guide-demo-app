@@ -37,13 +37,10 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for WebSocket
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/ws/**").permitAll() // Allow WebSocket connections
-                        .requestMatchers("/api/public/**").permitAll() // Public API endpoints
-                        .requestMatchers("/api/users/register").permitAll() // Allow user registration
-                        .anyRequest().authenticated() // All other requests need authentication
+                        .anyRequest().permitAll() // Allow all requests without authentication
                 )
-                .userDetailsService(userDetailsService) // Use our custom UserDetailsService
-                .httpBasic(httpBasic -> {}) // Enable HTTP Basic Authentication
+                .userDetailsService(userDetailsService) // Keep the UserDetailsService for potential future use
+                .httpBasic(httpBasic -> {}) // Keep HTTP Basic Authentication but it won't be required
                 .build();
     }
 
