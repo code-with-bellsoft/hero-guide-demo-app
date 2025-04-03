@@ -21,6 +21,7 @@
         <div class="navbar-start">
             <a class="navbar-item" href="/">Home</a>
             <a class="navbar-item" href="/assistant">Assistant</a>
+            <a class="navbar-item" href="/admin">Admin</a>
         </div>
     </div>
 </nav>

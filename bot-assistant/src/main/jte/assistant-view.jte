@@ -54,6 +54,7 @@
         <div class="navbar-start">
             <a class="navbar-item" href="/">Home</a>
             <a class="navbar-item" href="/assistant">Assistant</a>
+            <a class="navbar-item" href="/admin">Admin</a>
         </div>
     </div>
 </nav>
@@ -139,14 +140,17 @@
             try {
                 showTypingIndicator();
 
-                const response = await fetch('/api/bot/chat', {
+                const response = await fetch('/api/bot/process', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: message,
-                        sessionId: 'web-session'
+                        content: message,
+                        sessionId: 'web-session',
+                        type: 'CHAT',
+                        senderId: 'user',
+                        senderName: 'User'
                     })
                 });
 
@@ -156,7 +160,7 @@
 
                 const data = await response.json();
                 hideTypingIndicator();
-                addMessage(data.response, false);
+                addMessage(data.content, false);
             } catch (error) {
                 console.error('Error:', error);
                 hideTypingIndicator();

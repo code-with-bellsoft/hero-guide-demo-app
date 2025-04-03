@@ -1,11 +1,13 @@
 package com.github.asm0dey.botassistant.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.asm0dey.botassistant.model.ChatMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -21,11 +23,13 @@ public class CacheService {
     private static final long CACHE_TTL_HOURS = 24;
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
     private final AtomicLong cacheHits = new AtomicLong(0);
     private final AtomicLong cacheMisses = new AtomicLong(0);
 
-    public CacheService(RedisTemplate<String, Object> redisTemplate) {
+    public CacheService(RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper) {
         this.redisTemplate = redisTemplate;
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -40,11 +44,19 @@ public class CacheService {
 
         Object cachedResponse = redisTemplate.opsForValue().get(key);
 
-        if (cachedResponse instanceof ChatMessage) {
+        if (cachedResponse == null) {
+            log.info("Cache miss for message: {}", message.content());
+            cacheMisses.incrementAndGet();
+            return Optional.empty();
+        }
+
+        try {
+            ChatMessage chatMessage = objectMapper.readValue(cachedResponse.toString(), ChatMessage.class);
             log.info("Cache hit for message: {}", message.content());
             cacheHits.incrementAndGet();
-            return Optional.of((ChatMessage) cachedResponse);
-        } else {
+            return Optional.of(chatMessage);
+        } catch (Exception e) {
+            log.error("Error converting cached response to ChatMessage", e);
             log.info("Cache miss for message: {}", message.content());
             cacheMisses.incrementAndGet();
             return Optional.empty();
@@ -61,8 +73,14 @@ public class CacheService {
         String key = generateCacheKey(message);
         log.debug("Caching response for key: {}", key);
 
-        redisTemplate.opsForValue().set(key, response, CACHE_TTL_HOURS, TimeUnit.HOURS);
-        log.info("Cached response for message: {}", message.content());
+        try {
+            // Serialize the response to a JSON string
+            String jsonResponse = objectMapper.writeValueAsString(response);
+            redisTemplate.opsForValue().set(key, jsonResponse, CACHE_TTL_HOURS, TimeUnit.HOURS);
+            log.info("Cached response for message: {}", message.content());
+        } catch (Exception e) {
+            log.error("Error caching response", e);
+        }
     }
 
     /**
@@ -101,9 +119,62 @@ public class CacheService {
      * @param message the message
      * @return the cache key
      */
-    private String generateCacheKey(ChatMessage message) {
+    public String generateCacheKey(ChatMessage message) {
         // Normalize the message content (lowercase, trim, remove extra spaces)
         String normalizedContent = message.content().toLowerCase().trim().replaceAll("\\s+", " ");
         return CACHE_KEY_PREFIX + normalizedContent;
+    }
+
+    /**
+     * Convert a Map to a ChatMessage.
+     * This is used when the cached response is deserialized as a Map instead of a ChatMessage.
+     *
+     * @param map the map to convert
+     * @return the ChatMessage
+     */
+    private ChatMessage convertMapToChatMessage(Map<String, Object> map) {
+        String id = (String) map.get("id");
+        String sessionId = (String) map.get("sessionId");
+        String senderId = (String) map.get("senderId");
+        String senderName = (String) map.get("senderName");
+        ChatMessage.MessageType type = null;
+        if (map.get("type") != null) {
+            if (map.get("type") instanceof String) {
+                type = ChatMessage.MessageType.valueOf((String) map.get("type"));
+            } else if (map.get("type") instanceof Map) {
+                Map<String, Object> typeMap = (Map<String, Object>) map.get("type");
+                if (typeMap.containsKey("name")) {
+                    type = ChatMessage.MessageType.valueOf((String) typeMap.get("name"));
+                }
+            }
+        }
+        String content = (String) map.get("content");
+
+        // Handle timestamp conversion
+        java.time.LocalDateTime timestamp = null;
+        if (map.get("timestamp") != null) {
+            if (map.get("timestamp") instanceof String) {
+                timestamp = java.time.LocalDateTime.parse((String) map.get("timestamp"));
+            } else if (map.get("timestamp") instanceof Map) {
+                // If timestamp is a complex object, try to convert it using ObjectMapper
+                timestamp = objectMapper.convertValue(map.get("timestamp"), java.time.LocalDateTime.class);
+            }
+        }
+
+        boolean processedByBot = false;
+        if (map.get("processedByBot") != null) {
+            processedByBot = (Boolean) map.get("processedByBot");
+        }
+
+        return new ChatMessage(
+                id,
+                sessionId,
+                senderId,
+                senderName,
+                type != null ? type : ChatMessage.MessageType.BOT,
+                content,
+                timestamp != null ? timestamp : java.time.LocalDateTime.now(),
+                processedByBot
+        );
     }
 }

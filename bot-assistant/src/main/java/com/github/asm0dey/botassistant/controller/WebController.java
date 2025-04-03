@@ -33,4 +33,16 @@ public class WebController {
         model.addAttribute("title", "Bot Assistant - Chat");
         return "assistant-view";
     }
+
+    /**
+     * Renders the admin page.
+     *
+     * @param model the model
+     * @return the view name
+     */
+    @GetMapping("/admin")
+    public String admin(Model model) {
+        model.addAttribute("title", "Bot Assistant - Admin");
+        return "bot-admin";
+    }
 }
