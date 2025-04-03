@@ -131,7 +131,7 @@
                         </div>
                     </div>
                     <div class="card-content">
-                        @if(authenticated != null && authenticated)
+                        @if(authenticated)
                             <div class="field">
                                 <div class="control">
                                     <input class="input" type="text" id="username" value="${username}" readonly>

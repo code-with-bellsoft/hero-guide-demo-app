@@ -144,7 +144,7 @@ public class ChatSessionController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found"));
 
         // Only creator or admin can update session
-        if (!session.getCreatedBy().equals(userId) && !isAdmin()) {
+        if (!session.getCreatedBy().equals(userId) && isNotAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the creator can update this session");
         }
 
@@ -189,7 +189,7 @@ public class ChatSessionController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found"));
 
         // Only creator or admin can add participants
-        if (!session.getCreatedBy().equals(userId) && !isAdmin()) {
+        if (!session.getCreatedBy().equals(userId) && isNotAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the creator can add participants");
         }
 
@@ -228,7 +228,7 @@ public class ChatSessionController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found"));
 
         // Only creator, admin, or the participant themselves can remove a participant
-        if (!session.getCreatedBy().equals(currentUserId) && !currentUserId.equals(userId) && !isAdmin()) {
+        if (!session.getCreatedBy().equals(currentUserId) && !currentUserId.equals(userId) && isNotAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission to remove this participant");
         }
 
@@ -256,7 +256,7 @@ public class ChatSessionController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found"));
 
         // Only creator or admin can delete session
-        if (!session.getCreatedBy().equals(userId) && !isAdmin()) {
+        if (!session.getCreatedBy().equals(userId) && isNotAdmin()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the creator can delete this session");
         }
 
@@ -282,9 +282,9 @@ public class ChatSessionController {
      *
      * @return true if the user is an admin, false otherwise
      */
-    private boolean isAdmin() {
+    private boolean isNotAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+                .noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
     }
 }

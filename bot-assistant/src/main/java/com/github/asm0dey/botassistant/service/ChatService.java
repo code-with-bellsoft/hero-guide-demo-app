@@ -179,12 +179,13 @@ public class ChatService {
         long tokens = totalTokens.get();
 
         return String.format(
-                "Total requests: %d\n" +
-                        "AI requests: %d\n" +
-                        "Cached responses: %d\n" +
-                        "Cache hit ratio: %.2f\n" +
-                        "Errors: %d\n" +
-                        "Total tokens used: %d",
+                """
+                       Total requests: %d
+                        AI requests: %d
+                        Cached responses: %d
+                        Cache hit ratio: %.2f
+                        Errors: %d
+                        Total tokens used: %d""",
                 total, ai, cached, cacheHitRatio, errors, tokens);
     }
 

@@ -2,28 +2,9 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title}</title>
-    <link rel="stylesheet" href="/webjars/bulma/1.0.3/css/bulma.min.css">
-    <link rel="stylesheet" href="/webjars/fortawesome__fontawesome-free/6.7.2/css/all.min.css">
-</head>
+@template.fragments.header(title = title)
 <body>
-<nav class="navbar is-info" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-            <strong>Bot Assistant</strong>
-        </a>
-    </div>
-    <div class="navbar-menu">
-        <div class="navbar-start">
-            <a class="navbar-item" href="/">Home</a>
-            <a class="navbar-item" href="/assistant">Assistant</a>
-            <a class="navbar-item" href="/admin">Admin</a>
-        </div>
-    </div>
-</nav>
+@template.fragments.navbar()
 
 <section class="section">
     <div class="container">
@@ -162,13 +143,7 @@
     </div>
 </section>
 
-<footer class="footer">
-    <div class="content has-text-centered">
-        <p>
-            <strong>Bot Assistant</strong> powered by Spring Boot, OpenAI, and jte.
-        </p>
-    </div>
-</footer>
+@template.fragments.footer()
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
