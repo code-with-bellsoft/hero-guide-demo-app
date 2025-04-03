@@ -45,6 +45,8 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+      bot-assistant:
+        condition: service_healthy
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 10s
