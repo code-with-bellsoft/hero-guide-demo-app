@@ -1,5 +1,6 @@
 @param String title
 @param String extraStyle = ""
+@param gg.jte.Content extraStyleContent = null
 @param String extraScript = ""
 
 <head>
@@ -10,6 +11,9 @@
     <link rel="stylesheet" href="/webjars/fortawesome__fontawesome-free/6.7.2/css/all.min.css">
     @if(!extraStyle.isEmpty())
         $unsafe{extraStyle}
+    @endif
+    @if(extraStyleContent!=null)
+        ${extraStyleContent}
     @endif
     @if(!extraScript.isEmpty())
         $unsafe{extraScript}

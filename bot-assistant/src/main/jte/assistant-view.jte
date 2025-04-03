@@ -3,8 +3,8 @@
 <!DOCTYPE html>
 <html lang="en">
 @template.fragments.header(
-    title = title,
-    extraStyle = "@template.fragments.assistant-styles()"
+title = title,
+extraStyleContent = @`@template.fragments.assistant-styles()`
 )
 <body>
 @template.fragments.navbar()

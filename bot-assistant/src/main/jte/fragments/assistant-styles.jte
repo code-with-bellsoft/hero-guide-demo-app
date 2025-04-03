@@ -23,6 +23,7 @@
 
     .message-bot {
         background-color: #f5f5f5;
+        color: black;
     }
 
     .typing-indicator {

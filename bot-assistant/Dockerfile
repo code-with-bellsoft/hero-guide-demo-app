@@ -16,7 +16,7 @@ COPY chat-api/pom.xml ./chat-api/pom.xml
 COPY bot-assistant/src/ ./bot-assistant/src/
 
 # Build the application
-RUN ./mvnw package -pl bot-assistant -am -DskipTests
+RUN ./mvnw package -pl bot-assistant -am -Dmaven.test.skip=true
 
 # Expose the port the app runs on
 EXPOSE 8081
