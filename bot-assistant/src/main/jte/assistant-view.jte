@@ -4,7 +4,7 @@
 <html lang="en">
 @template.fragments.header(
 title = title,
-extraStyleContent = @`@template.fragments.assistant-styles()`
+extraStyle = @`@template.fragments.assistant-styles()`
 )
 <body>
 @template.fragments.navbar()

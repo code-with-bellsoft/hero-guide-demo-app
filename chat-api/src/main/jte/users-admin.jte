@@ -6,14 +6,15 @@
 <!DOCTYPE html>
 <html lang="en">
 @template.fragments.header(
-    title = title,
-    extraScript = "<script src=\"/webjars/axios/1.8.4/dist/axios.min.js\"></script>"
+title = title,
+extraScript = @`
+<script src="/webjars/axios/1.8.4/dist/axios.min.js"></script>`
 )
 <body>
 @template.fragments.navbar(
-    authenticated = authenticated,
-    username = username,
-    isAdmin = isAdmin
+authenticated = authenticated,
+username = username,
+isAdmin = isAdmin
 )
 
 <section class="section">

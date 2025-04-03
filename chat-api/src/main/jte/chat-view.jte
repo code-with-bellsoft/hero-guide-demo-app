@@ -6,114 +6,77 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title}</title>
-    <link rel="stylesheet" href="/webjars/bulma/1.0.3/css/bulma.min.css">
-    <link rel="stylesheet" href="/webjars/fortawesome__fontawesome-free/6.7.2/css/all.min.css">
-    <script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>
-    <script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
-    <style>
-        .chat-container {
-            height: 60vh;
-            overflow-y: auto;
-            padding: 1rem;
-            border: 1px solid #dbdbdb;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-        }
+@template.fragments.header(
+title = title,
+extraStyle = @`
+<style>
+    .chat-container {
+        height: 60vh;
+        overflow-y: auto;
+        padding: 1rem;
+        border: 1px solid #dbdbdb;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+    }
 
-        .message-bubble {
-            padding: 0.75rem;
-            border-radius: 1rem;
-            margin-bottom: 0.5rem;
-            max-width: 80%;
-            word-wrap: break-word;
-        }
+    .message-bubble {
+        padding: 0.75rem;
+        border-radius: 1rem;
+        margin-bottom: 0.5rem;
+        max-width: 80%;
+        word-wrap: break-word;
+    }
 
-        .message-user {
-            background-color: #3273dc;
-            color: white;
-            margin-left: auto;
-        }
+    .message-user {
+        background-color: #3273dc;
+        color: white;
+        margin-left: auto;
+    }
 
-        .message-other {
-            background-color: #f5f5f5;
-            margin-right: auto;
-        }
+    .message-other {
+        background-color: #f5f5f5;
+        margin-right: auto;
+    }
 
-        .message-bot {
-            background-color: #23d160;
-            color: white;
-            margin-right: auto;
-        }
+    .message-bot {
+        background-color: #23d160;
+        color: white;
+        margin-right: auto;
+    }
 
-        .message-join, .message-leave {
-            background-color: #f5f5f5;
-            color: #4a4a4a;
-            text-align: center;
-            font-style: italic;
-            margin: 0 auto;
-        }
+    .message-join, .message-leave {
+        background-color: #f5f5f5;
+        color: #4a4a4a;
+        text-align: center;
+        font-style: italic;
+        margin: 0 auto;
+    }
 
-        .message-info {
-            font-size: 0.8rem;
-            color: #7a7a7a;
-            margin-bottom: 0.2rem;
-        }
+    .message-info {
+        font-size: 0.8rem;
+        color: #7a7a7a;
+        margin-bottom: 0.2rem;
+    }
 
-        .connecting {
-            text-align: center;
-            padding: 1rem;
-            font-style: italic;
-            color: #7a7a7a;
-        }
-    </style>
-</head>
+    .connecting {
+        text-align: center;
+        padding: 1rem;
+        font-style: italic;
+        color: #7a7a7a;
+    }
+</style>`,
+extraScript = @`
+<script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
+`
+)
+
 <body>
-<nav class="navbar is-primary" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-            <strong>Chat Application</strong>
-        </a>
-    </div>
-    <div class="navbar-menu">
-        <div class="navbar-start">
-            <a class="navbar-item" href="/">Home</a>
-            <a class="navbar-item" href="/chat">Chat</a>
-            @if(isAdmin)
-                <div class="navbar-item has-dropdown is-hoverable">
-                    <a class="navbar-link">Admin</a>
-                    <div class="navbar-dropdown">
-                        <a class="navbar-item" href="/admin/sessions">Sessions</a>
-                        <a class="navbar-item" href="/admin/chat/history">Chat History</a>
-                        <a class="navbar-item" href="/admin/users">Users</a>
-                    </div>
-                </div>
-            @endif
-        </div>
-        <div class="navbar-end">
-            <div class="navbar-item">
-                @if(authenticated)
-                    <div class="buttons">
-                        <span class="navbar-item">Welcome, ${username}</span>
-                        <a class="button is-light" href="/logout">
-                            <strong>Logout</strong>
-                        </a>
-                    </div>
-                @else
-                    <div class="buttons">
-                        <a class="button is-primary" href="/login">
-                            <strong>Login</strong>
-                        </a>
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
-</nav>
-
+@template.fragments.navbar(
+    authenticated = authenticated,
+    username = username,
+    isAdmin = isAdmin
+)
 <section class="section">
     <div class="container">
         <div class="columns">
@@ -182,15 +145,7 @@
         </div>
     </div>
 </section>
-
-<footer class="footer">
-    <div class="content has-text-centered">
-        <p>
-            <strong>Chat Application</strong> powered by Spring Boot and jte.
-        </p>
-    </div>
-</footer>
-
+@template.fragments.footer()
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const chatContainer = document.getElementById('chatContainer');

@@ -8,7 +8,7 @@
 <html lang="en">
 @template.fragments.header(
     title = title,
-    extraScript = "<script src=\"/webjars/axios/1.8.4/dist/axios.min.js\"></script>"
+    extraScript = @`<script src="/webjars/axios/1.8.4/dist/axios.min.js"></script>`
 )
 <body>
 @template.fragments.navbar(
