@@ -61,6 +61,10 @@
             <groupId>gg.jte</groupId>
             <artifactId>jte</artifactId>
         </dependency>
+        <dependency>
+            <groupId>gg.jte</groupId>
+            <artifactId>jte-models</artifactId>
+        </dependency>
 
         <!-- Bulma CSS framework -->
         <dependency>
@@ -132,6 +136,11 @@
                     <targetDirectory>${project.build.directory}/jte-source</targetDirectory>
                     <keepGeneratedSourceFiles>true</keepGeneratedSourceFiles>
                     <contentType>Html</contentType>
+                    <extensions>
+                        <extension>
+                            <className>gg.jte.models.generator.ModelExtension</className>
+                        </extension>
+                    </extensions>
                 </configuration>
                 <executions>
                     <execution>
@@ -139,6 +148,32 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>gg.jte</groupId>
+                        <artifactId>jte-models</artifactId>
+                        <version>${jte.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/jte-source</source>
+                            </sources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

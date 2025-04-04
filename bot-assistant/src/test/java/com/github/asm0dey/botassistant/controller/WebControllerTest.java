@@ -8,9 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.MediaType.TEXT_HTML;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -34,10 +38,18 @@ public class WebControllerTest {
      */
     @Test
     public void testIndexEndpoint() throws Exception {
-        System.out.println("[DEBUG_LOG] Testing index endpoint");
-        mockMvc.perform(get("/"))
+        MvcResult result = mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("index"));
+                .andExpect(content().contentTypeCompatibleWith(TEXT_HTML))
+                .andExpect(content().string(containsString("Bot Assistant - Home")))
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        assertTrue(content.contains("Bot Assistant"), "Response should contain application name");
+        // Check for common elements on the home page
+        assertTrue(content.contains("Welcome") || content.contains("welcome") || 
+                   content.contains("Home") || content.contains("home"), 
+                   "Response should contain welcome message or home page elements");
     }
 
     /**
@@ -45,10 +57,37 @@ public class WebControllerTest {
      */
     @Test
     public void testAssistantEndpoint() throws Exception {
-        System.out.println("[DEBUG_LOG] Testing assistant endpoint");
-        mockMvc.perform(get("/assistant"))
+        MvcResult result = mockMvc.perform(get("/assistant"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("assistant-view"));
+                .andExpect(content().contentTypeCompatibleWith(TEXT_HTML))
+                .andExpect(content().string(containsString("Bot Assistant - Chat")))
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        assertTrue(content.contains("Bot Assistant"), "Response should contain application name");
+        // Check for chat-related elements
+        assertTrue(content.contains("Chat") || content.contains("chat") || 
+                   content.contains("Message") || content.contains("message"), 
+                   "Response should contain chat-related elements");
+    }
+
+    /**
+     * Test the admin endpoint.
+     */
+    @Test
+    public void testAdminEndpoint() throws Exception {
+        MvcResult result = mockMvc.perform(get("/admin"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(TEXT_HTML))
+                .andExpect(content().string(containsString("Bot Assistant - Admin")))
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        assertTrue(content.contains("Bot Assistant"), "Response should contain application name");
+        // Check for admin-related elements
+        assertTrue(content.contains("Admin") || content.contains("admin") || 
+                   content.contains("Configuration") || content.contains("configuration"), 
+                   "Response should contain admin-related elements");
     }
 
     /**
@@ -57,9 +96,8 @@ public class WebControllerTest {
      */
     @Test
     public void testWebjarsContent() throws Exception {
-        System.out.println("[DEBUG_LOG] Testing webjars content accessibility");
         mockMvc.perform(get("/webjars/bulma/1.0.3/css/bulma.min.css"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.valueOf("text/css")));
+                .andExpect(content().contentType(MediaType.valueOf("text/css")));
     }
 }

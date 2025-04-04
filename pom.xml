@@ -52,6 +52,11 @@
                 <artifactId>jte</artifactId>
                 <version>${jte.version}</version>
             </dependency>
+            <dependency>
+                <groupId>gg.jte</groupId>
+                <artifactId>jte-models</artifactId>
+                <version>${jte.version}</version>
+            </dependency>
 
             <!-- Bulma CSS framework -->
             <dependency>
