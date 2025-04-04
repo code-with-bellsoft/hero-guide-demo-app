@@ -114,6 +114,12 @@
                     <licenseName>apache_v2</licenseName>
                     <organizationName>BellSoft</organizationName>
                     <projectName>hero-guide-demo-app</projectName>
+                    <extraExtensions>
+                        <jte>html</jte>
+                    </extraExtensions>
+                    <extraFiles>
+                        <DockerFile>properties</DockerFile>
+                    </extraFiles>
                 </configuration>
                 <executions>
                     <execution>
