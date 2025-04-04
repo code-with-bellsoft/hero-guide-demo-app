@@ -50,7 +50,9 @@ services:
   chat-api:
     build:
       context: .
-      dockerfile: ./chat-api/Dockerfile
+      dockerfile: ./Dockerfile
+      args:
+        project: chat-api
     ports:
       - "8080:8080"
     environment:
@@ -74,7 +76,9 @@ services:
   bot-assistant:
     build:
       context: .
-      dockerfile: ./bot-assistant/Dockerfile
+      dockerfile: ./Dockerfile
+      args:
+        project: bot-assistant
     ports:
       - "8081:8081"
     environment:

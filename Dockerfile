@@ -22,20 +22,20 @@ RUN apk add curl
 
 # Set working directory
 WORKDIR /app
-
+ARG project
+ENV project=${project}
 # Copy the Maven wrapper, parent pom.xml, and module files
 COPY .mvn/ .mvn/
 COPY mvnw ./
 COPY pom.xml ./
-COPY chat-api/pom.xml ./chat-api/
-COPY bot-assistant/pom.xml ./bot-assistant/pom.xml
-COPY chat-api/src/ ./chat-api/src/
+COPY chat-api ./chat-api
+COPY bot-assistant ./bot-assistant
 
 # Build the application
-RUN ./mvnw package -pl chat-api -am -Dmaven.test.skip=true
+RUN ./mvnw package -pl ${project} -am -Dmaven.test.skip=true
 
 # Expose the port the app runs on
 EXPOSE 8080
 
 # Run the application with AppCDS
-ENTRYPOINT ["java", "-jar", "chat-api/target/chat-api-1.0-SNAPSHOT.jar"]
+ENTRYPOINT java -jar ${project}/target/${project}-1.0-SNAPSHOT.jar
