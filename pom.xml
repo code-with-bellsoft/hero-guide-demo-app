@@ -105,6 +105,27 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.5.0</version>
+                <configuration>
+                    <inceptionYear>2025</inceptionYear>
+                    <licenseName>apache_v2</licenseName>
+                    <organizationName>BellSoft</organizationName>
+                    <projectName>hero-guide-demo-app</projectName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>check-file-header</id>
+                        <goals>
+                            <goal>check-file-header</goal>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
