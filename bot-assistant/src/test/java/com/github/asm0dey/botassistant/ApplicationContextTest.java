@@ -31,6 +31,7 @@ class ApplicationContextTest {
 
     @Test
     void contextLoads() {
+        // This test will launch the application, and if it loads correctly - the test passes
     }
 
 

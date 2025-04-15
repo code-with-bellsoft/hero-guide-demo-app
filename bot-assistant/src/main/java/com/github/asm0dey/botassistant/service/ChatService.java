@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class ChatService {
     private static final Logger log = LoggerFactory.getLogger(ChatService.class);
+    public static final String CONTENT_KEY = "content";
 
     private final WebClient.Builder webClientBuilder;
     private final CacheService cacheService;
@@ -105,11 +106,11 @@ public class ChatService {
             // Create messages array
             Map<String, String> systemMessage = new HashMap<>();
             systemMessage.put("role", "system");
-            systemMessage.put("content", systemPrompt);
+            systemMessage.put(CONTENT_KEY, systemPrompt);
 
             Map<String, String> userMessage = new HashMap<>();
             userMessage.put("role", "user");
-            userMessage.put("content", message.content());
+            userMessage.put(CONTENT_KEY, message.content());
 
             requestBody.put("messages", List.of(systemMessage, userMessage));
 
@@ -170,9 +171,9 @@ public class ChatService {
         try {
             List<Map<String, Object>> choices = (List<Map<String, Object>>) response.get("choices");
             if (choices != null && !choices.isEmpty()) {
-                Map<String, Object> choice = choices.get(0);
+                Map<String, Object> choice = choices.getFirst();
                 Map<String, Object> message = (Map<String, Object>) choice.get("message");
-                return (String) message.get("content");
+                return (String) message.get(CONTENT_KEY);
             }
         } catch (Exception e) {
             log.error("Error extracting content from response", e);

@@ -41,6 +41,7 @@ import java.util.Optional;
 @RequestMapping("/api/sessions")
 public class ChatSessionController {
 
+    public static final String SESSION_NOT_FOUND = "Session not found";
     private final ChatSessionRepository chatSessionRepository;
     private final UserRepository userRepository;
 
@@ -104,7 +105,7 @@ public class ChatSessionController {
     public ResponseEntity<ChatSession> getSessionById(@PathVariable String id) {
         String userId = getCurrentUserId();
         ChatSession session = chatSessionRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SESSION_NOT_FOUND));
 
         // Check if user is a participant
         if (!session.getParticipants().contains(userId)) {
@@ -156,7 +157,7 @@ public class ChatSessionController {
 
         String userId = getCurrentUserId();
         ChatSession session = chatSessionRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SESSION_NOT_FOUND));
 
         // Only creator or admin can update session
         if (!session.getCreatedBy().equals(userId) && isNotAdmin()) {
@@ -201,7 +202,7 @@ public class ChatSessionController {
 
         String userId = getCurrentUserId();
         ChatSession session = chatSessionRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SESSION_NOT_FOUND));
 
         // Only creator or admin can add participants
         if (!session.getCreatedBy().equals(userId) && isNotAdmin()) {
@@ -240,7 +241,7 @@ public class ChatSessionController {
 
         String currentUserId = getCurrentUserId();
         ChatSession session = chatSessionRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SESSION_NOT_FOUND));
 
         // Only creator, admin, or the participant themselves can remove a participant
         if (!session.getCreatedBy().equals(currentUserId) && !currentUserId.equals(userId) && isNotAdmin()) {
@@ -268,7 +269,7 @@ public class ChatSessionController {
     public ResponseEntity<Void> deleteSession(@PathVariable String id) {
         String userId = getCurrentUserId();
         ChatSession session = chatSessionRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SESSION_NOT_FOUND));
 
         // Only creator or admin can delete session
         if (!session.getCreatedBy().equals(userId) && isNotAdmin()) {

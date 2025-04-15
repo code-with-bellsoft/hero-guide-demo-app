@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -140,56 +139,4 @@ public class CacheService {
         return CACHE_KEY_PREFIX + normalizedContent;
     }
 
-    /**
-     * Convert a Map to a ChatMessage.
-     * This is used when the cached response is deserialized as a Map instead of a ChatMessage.
-     *
-     * @param map the map to convert
-     * @return the ChatMessage
-     */
-    private ChatMessage convertMapToChatMessage(Map<String, Object> map) {
-        String id = (String) map.get("id");
-        String sessionId = (String) map.get("sessionId");
-        String senderId = (String) map.get("senderId");
-        String senderName = (String) map.get("senderName");
-        ChatMessage.MessageType type = null;
-        if (map.get("type") != null) {
-            if (map.get("type") instanceof String) {
-                type = ChatMessage.MessageType.valueOf((String) map.get("type"));
-            } else if (map.get("type") instanceof Map) {
-                Map<String, Object> typeMap = (Map<String, Object>) map.get("type");
-                if (typeMap.containsKey("name")) {
-                    type = ChatMessage.MessageType.valueOf((String) typeMap.get("name"));
-                }
-            }
-        }
-        String content = (String) map.get("content");
-
-        // Handle timestamp conversion
-        java.time.LocalDateTime timestamp = null;
-        if (map.get("timestamp") != null) {
-            if (map.get("timestamp") instanceof String) {
-                timestamp = java.time.LocalDateTime.parse((String) map.get("timestamp"));
-            } else if (map.get("timestamp") instanceof Map) {
-                // If timestamp is a complex object, try to convert it using ObjectMapper
-                timestamp = objectMapper.convertValue(map.get("timestamp"), java.time.LocalDateTime.class);
-            }
-        }
-
-        boolean processedByBot = false;
-        if (map.get("processedByBot") != null) {
-            processedByBot = (Boolean) map.get("processedByBot");
-        }
-
-        return new ChatMessage(
-                id,
-                sessionId,
-                senderId,
-                senderName,
-                type != null ? type : ChatMessage.MessageType.BOT,
-                content,
-                timestamp != null ? timestamp : java.time.LocalDateTime.now(),
-                processedByBot
-        );
-    }
 }
