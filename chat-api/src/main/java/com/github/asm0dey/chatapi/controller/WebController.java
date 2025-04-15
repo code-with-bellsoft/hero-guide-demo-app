@@ -195,4 +195,17 @@ public class WebController {
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(authority -> authority.toUpperCase().contains("ROLE_ADMIN"));
     }
+
+    /**
+     * Renders the access denied page.
+     *
+     * @return the view name
+     */
+    @GetMapping(value = "/access-denied", produces = TEXT_HTML_VALUE)
+    public JteModel accessDeniedView(Authentication authentication) {
+        return templates.accessDenied("Access Denied",
+                isAuthenticated(authentication),
+                authentication == null ? "" : authentication.getName(),
+                isAdmin(authentication));
+    }
 }
