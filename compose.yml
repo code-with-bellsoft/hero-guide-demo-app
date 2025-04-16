@@ -18,6 +18,7 @@ services:
   # MongoDB service
   mongodb:
     image: mongo:latest
+    networks: [chat]
     ports:
       - "27017:27017"
     volumes:
@@ -35,6 +36,7 @@ services:
   # Redis service
   redis:
     image: redis:latest
+    networks: [chat]
     ports:
       - "6379:6379"
     volumes:
@@ -50,9 +52,11 @@ services:
   chat-api:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./dockerfiles/Dockerfile${CHAT_DOCKER_SUFFIX}
+      network: host
       args:
         project: chat-api
+    networks: [chat]
     ports:
       - "8080:8080"
     environment:
@@ -76,9 +80,10 @@ services:
   bot-assistant:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./dockerfiles/Dockerfile${BOT_DOCKER_SUFFIX}
       args:
         project: bot-assistant
+    networks: [chat]
     ports:
       - "8081:8081"
     environment:
@@ -100,3 +105,6 @@ volumes:
   mongodb_data:
   redis_data:
 
+networks:
+  chat:
+    name: hero-guide
