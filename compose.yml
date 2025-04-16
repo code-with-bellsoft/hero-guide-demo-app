@@ -52,7 +52,7 @@ services:
   chat-api:
     build:
       context: .
-      dockerfile: ./dockerfiles/Dockerfile${CHAT_DOCKER_SUFFIX}
+      dockerfile: ./dockerfiles/Dockerfile${SUFFIX}
       network: host
       args:
         project: chat-api
@@ -80,7 +80,7 @@ services:
   bot-assistant:
     build:
       context: .
-      dockerfile: ./dockerfiles/Dockerfile${BOT_DOCKER_SUFFIX}
+      dockerfile: ./dockerfiles/Dockerfile${SUFFIX}
       args:
         project: bot-assistant
     networks: [chat]

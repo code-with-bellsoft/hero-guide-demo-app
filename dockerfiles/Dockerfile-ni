@@ -14,19 +14,20 @@
 # limitations under the License.
 #
 
-FROM bellsoft/liberica-native-image-kit-container:jdk-21-nik-23.1.6-stream-musl as builder
+FROM bellsoft/liberica-native-image-kit-container:jdk-21-nik-23.1.6-stream-glibc as builder
+ARG project
+ENV project=${project}
 
-RUN apk add libstdc++
 WORKDIR /app
-ADD chat-api /app/chat-api
-ADD pom.xml ./
-RUN cd chat-api && ./mvnw -Dmaven.test.skip=true -Pnative native:compile
+ADD ${project} /app/${project}
+ADD ../pom.xml ./
+RUN cd ${project} && ./mvnw -Dmaven.test.skip=true -Pnative native:compile
 
-
-FROM bellsoft/alpaquita-linux-base:stream-musl
+FROM bellsoft/alpaquita-linux-base:stream-glibc
+ARG project
+ENV project=${project}
 
 RUN apk add curl
 WORKDIR /app
-EXPOSE 8080
-ENTRYPOINT ["/app/chat"]
-COPY --from=builder /app/chat-api/target/native/chat /app/chat
+ENTRYPOINT ["/app/app"]
+COPY --from=builder /app/${project}/target/native/${project} /app/app

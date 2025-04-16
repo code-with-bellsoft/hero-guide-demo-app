@@ -16,27 +16,30 @@
 
 FROM bellsoft/liberica-runtime-container:jdk-21-stream-musl as builder
 
-WORKDIR /app
-ADD bot-assistant /app/bot-assistant
-ADD pom.xml ./
-RUN cd bot-assistant && ./mvnw -Dmaven.test.skip=true clean package
+ARG project
+ENV project=${project}
 
+WORKDIR /app
+ADD ${project} /app/${project}
+ADD ../pom.xml ./
+RUN cd ${project} && ./mvnw -Dmaven.test.skip=true clean package
 
 FROM bellsoft/liberica-runtime-container:jre-21-cds-musl as optimizer
+ARG project
+ENV project=${project}
 
 WORKDIR /app
-COPY --from=builder /app/bot-assistant/target/*.jar bot.jar
-RUN java -Djarmode=tools -jar bot.jar extract --layers --launcher
+COPY --from=builder /app/${project}/target/*.jar app.jar
+RUN java -Djarmode=tools -jar app.jar extract --layers --launcher
 
 
 FROM bellsoft/liberica-runtime-container:jre-21-cds-musl
 
 RUN apk add curl
 WORKDIR /app
-EXPOSE 8081
 ENTRYPOINT ["java", "-Dspring.aot.enabled=true", "-XX:SharedArchiveFile=application.jsa", "org.springframework.boot.loader.launch.JarLauncher"]
-COPY --from=optimizer /app/bot/dependencies/ ./
-COPY --from=optimizer /app/bot/spring-boot-loader/ ./
-COPY --from=optimizer /app/bot/snapshot-dependencies/ ./
-COPY --from=optimizer /app/bot/application/ ./
+COPY --from=optimizer /app/app/dependencies/ ./
+COPY --from=optimizer /app/app/spring-boot-loader/ ./
+COPY --from=optimizer /app/app/snapshot-dependencies/ ./
+COPY --from=optimizer /app/app/application/ ./
 RUN java -Dspring.aot.enabled=true -XX:ArchiveClassesAtExit=./application.jsa -Dspring.context.exit=onRefresh org.springframework.boot.loader.launch.JarLauncher

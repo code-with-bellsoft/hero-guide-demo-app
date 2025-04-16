@@ -147,17 +147,6 @@
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.graalvm.buildtools</groupId>-->
-<!--                <artifactId>native-maven-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <imageName>bot-assistant</imageName>-->
-<!--                    <mainClass>com.github.asm0dey.botassistant.BotAssistantApplication</mainClass>-->
-<!--                    <buildArgs>-->
-<!--                        <buildArg>&#45;&#45;no-fallback</buildArg>-->
-<!--                    </buildArgs>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
             <plugin>
                 <groupId>gg.jte</groupId>
                 <artifactId>jte-maven-plugin</artifactId>
@@ -230,7 +219,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <imageName>bot</imageName>
+                            <imageName>bot-assistant</imageName>
                             <outputDirectory>target/native</outputDirectory>
                             <mainClass>com.github.asm0dey.botassistant.BotAssistantApplication</mainClass>
                             <buildArgs>

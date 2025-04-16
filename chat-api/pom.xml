@@ -228,7 +228,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <imageName>chat</imageName>
+                            <imageName>chat-api</imageName>
                             <outputDirectory>target/native</outputDirectory>
                             <mainClass>com.github.asm0dey.chatapi.ChatApiApplication</mainClass>
                             <buildArgs>

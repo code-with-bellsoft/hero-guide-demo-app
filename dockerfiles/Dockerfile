@@ -14,17 +14,21 @@
 # limitations under the License.
 #
 
-FROM bellsoft/liberica-native-image-kit-container:jdk-21-nik-23.1.6-stream-glibc as builder
+FROM bellsoft/liberica-runtime-container:jdk-21-stream-musl as builder
+ARG project
+ENV project=${project}
 
 WORKDIR /app
-ADD bot-assistant /app/bot-assistant
-ADD pom.xml ./
-RUN cd bot-assistant && ./mvnw -Dmaven.test.skip=true -Pnative native:compile
+ADD ${project} /app/${project}
+ADD ../pom.xml ./
+RUN cd ${project} && ./mvnw -Dmaven.test.skip=true clean package
 
-FROM bellsoft/alpaquita-linux-base:stream-glibc
+
+FROM bellsoft/liberica-runtime-container:jre-21-musl
+ARG project
+ENV project=${project}
 
 RUN apk add curl
 WORKDIR /app
-EXPOSE 8081
-ENTRYPOINT ["/app/bot"]
-COPY --from=builder /app/bot-assistant/target/native/bot /app/bot
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+COPY --from=builder /app/${project}/target/*.jar /app/app.jar
