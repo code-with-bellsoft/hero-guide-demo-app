@@ -234,7 +234,7 @@
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
                             <classifier>exec</classifier>
-                                <mainClass>com.github.asm0dey.botassistant.BotAssistantApplication</mainClass>
+                            <mainClass>com.github.asm0dey.botassistant.BotAssistantApplication</mainClass>
                         </configuration>
                     </plugin>
                 </plugins>
