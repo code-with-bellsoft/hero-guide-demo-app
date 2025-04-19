@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-FROM bellsoft/liberica-runtime-container:jdk-21-stream-musl as builder
+FROM bellsoft/liberica-runtime-container:jdk-21.0.7_9-stream-musl as builder
 ARG project
 ENV project=${project}
 
@@ -24,7 +24,7 @@ ADD ../pom.xml ./
 RUN cd ${project} && ./mvnw -Dmaven.test.skip=true clean package
 
 
-FROM bellsoft/liberica-runtime-container:jre-21-musl
+FROM bellsoft/liberica-runtime-container:jre-21.0.7_9-musl
 ARG project
 ENV project=${project}
 
