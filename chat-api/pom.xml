@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
 
     Copyright © 2025 BellSoft (info@bell-sw.com)
@@ -16,9 +16,11 @@
     limitations under the License.
 
 -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -30,7 +32,8 @@
 
     <artifactId>chat-api</artifactId>
     <name>Chat API Service</name>
-    <description>Real-time chat API with WebSocket support and MongoDB storage</description>
+    <description
+    >Real-time chat API with WebSocket support and MongoDB storage</description>
 
     <dependencies>
         <!-- WebSocket support -->
@@ -87,7 +90,7 @@
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>bulma</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
 
         <!-- FontAwesome -->
@@ -162,13 +165,16 @@
                 <artifactId>jte-maven-plugin</artifactId>
                 <version>${jte.version}</version>
                 <configuration>
-                    <sourceDirectory>${project.basedir}/src/main/jte</sourceDirectory>
-                    <targetDirectory>${project.build.directory}/jte-source</targetDirectory>
+                    <sourceDirectory
+                    >${project.basedir}/src/main/jte</sourceDirectory>
+                    <targetDirectory
+                    >${project.build.directory}/jte-source</targetDirectory>
                     <keepGeneratedSourceFiles>true</keepGeneratedSourceFiles>
                     <contentType>Html</contentType>
                     <extensions>
                         <extension>
-                            <className>gg.jte.models.generator.ModelExtension</className>
+                            <className
+                            >gg.jte.models.generator.ModelExtension</className>
                         </extension>
                     </extensions>
                 </configuration>
@@ -230,9 +236,11 @@
                         <configuration>
                             <imageName>chat-api</imageName>
                             <outputDirectory>target/native</outputDirectory>
-                            <mainClass>com.github.asm0dey.chatapi.ChatApiApplication</mainClass>
+                            <mainClass
+                            >com.github.asm0dey.chatapi.ChatApiApplication</mainClass>
                             <buildArgs>
-                                <buildArg>-H:ConfigurationFileDirectories=./agent-data</buildArg>
+                                <buildArg
+                                >-H:ConfigurationFileDirectories=./agent-data</buildArg>
                             </buildArgs>
                         </configuration>
                     </plugin>
@@ -241,7 +249,8 @@
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
                             <classifier>exec</classifier>
-                            <mainClass>com.github.asm0dey.chatapi.ChatApiApplication</mainClass>
+                            <mainClass
+                            >com.github.asm0dey.chatapi.ChatApiApplication</mainClass>
                         </configuration>
                     </plugin>
                 </plugins>

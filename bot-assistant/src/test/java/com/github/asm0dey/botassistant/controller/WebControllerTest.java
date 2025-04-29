@@ -111,7 +111,7 @@ public class WebControllerTest {
      */
     @Test
     public void testWebjarsContent() throws Exception {
-        mockMvc.perform(get("/webjars/bulma/1.0.3/css/bulma.min.css"))
+        mockMvc.perform(get("/webjars/bulma/1.0.4/css/bulma.min.css"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.valueOf("text/css")));
     }

@@ -15,6 +15,12 @@
  */
 package com.github.asm0dey.chatapi.controller;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.MediaType.TEXT_HTML;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,16 +34,11 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.http.MediaType.TEXT_HTML;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @Testcontainers
 @SpringBootTest
 @AutoConfigureMockMvc
 public class WebControllerTest {
+
     @Container
     @ServiceConnection
     static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo");
@@ -50,16 +51,25 @@ public class WebControllerTest {
      */
     @Test
     public void testIndexEndpointAnonymous() throws Exception {
-        MvcResult result = mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_HTML))
-                .andExpect(content().string(containsString("Chat Application - Home")))
-                .andReturn();
+        MvcResult result = mockMvc
+            .perform(get("/"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(TEXT_HTML))
+            .andExpect(
+                content().string(containsString("Chat Application - Home"))
+            )
+            .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        assertTrue(content.contains("Chat Application"), "Response should contain application name");
+        assertTrue(
+            content.contains("Chat Application"),
+            "Response should contain application name"
+        );
         // Anonymous user should see login option
-        assertTrue(content.contains("Login") || content.contains("login"), "Anonymous user should see login option");
+        assertTrue(
+            content.contains("Login") || content.contains("login"),
+            "Anonymous user should see login option"
+        );
     }
 
     /**
@@ -68,17 +78,26 @@ public class WebControllerTest {
     @Test
     @WithUserDetails("user1")
     public void testIndexEndpointAsUser() throws Exception {
-        MvcResult result = mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_HTML))
-                .andExpect(content().string(containsString("Chat Application - Home")))
-                .andReturn();
+        MvcResult result = mockMvc
+            .perform(get("/"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(TEXT_HTML))
+            .andExpect(
+                content().string(containsString("Chat Application - Home"))
+            )
+            .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        assertTrue(content.contains("user1"), "Response should contain username");
+        assertTrue(
+            content.contains("user1"),
+            "Response should contain username"
+        );
         // Regular user should not see admin options
-        assertTrue(!content.contains("Admin Dashboard") || !content.contains("admin dashboard"), 
-                "Regular user should not see admin options");
+        assertTrue(
+            !content.contains("Admin Dashboard") ||
+            !content.contains("admin dashboard"),
+            "Regular user should not see admin options"
+        );
     }
 
     /**
@@ -87,17 +106,25 @@ public class WebControllerTest {
     @Test
     @WithUserDetails("admin1")
     public void testIndexEndpointAsAdmin() throws Exception {
-        MvcResult result = mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_HTML))
-                .andExpect(content().string(containsString("Chat Application - Home")))
-                .andReturn();
+        MvcResult result = mockMvc
+            .perform(get("/"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(TEXT_HTML))
+            .andExpect(
+                content().string(containsString("Chat Application - Home"))
+            )
+            .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        assertTrue(content.contains("admin1"), "Response should contain username");
+        assertTrue(
+            content.contains("admin1"),
+            "Response should contain username"
+        );
         // Admin user should see admin options
-        assertTrue(content.contains("Admin") || content.contains("admin"), 
-                "Admin user should see admin options");
+        assertTrue(
+            content.contains("Admin") || content.contains("admin"),
+            "Admin user should see admin options"
+        );
     }
 
     /**
@@ -106,17 +133,25 @@ public class WebControllerTest {
     @Test
     @WithUserDetails("user1")
     public void testChatEndpointAsUser() throws Exception {
-        MvcResult result = mockMvc.perform(get("/chat"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_HTML))
-                .andExpect(content().string(containsString("Chat Application - Chat")))
-                .andReturn();
+        MvcResult result = mockMvc
+            .perform(get("/chat"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(TEXT_HTML))
+            .andExpect(
+                content().string(containsString("Chat Application - Chat"))
+            )
+            .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        assertTrue(content.contains("user1"), "Response should contain username");
+        assertTrue(
+            content.contains("user1"),
+            "Response should contain username"
+        );
         // Should contain chat elements
-        assertTrue(content.contains("message") || content.contains("chat"), 
-                "Response should contain chat elements");
+        assertTrue(
+            content.contains("message") || content.contains("chat"),
+            "Response should contain chat elements"
+        );
     }
 
     /**
@@ -125,17 +160,25 @@ public class WebControllerTest {
     @Test
     @WithUserDetails("admin1")
     public void testChatEndpointAsAdmin() throws Exception {
-        MvcResult result = mockMvc.perform(get("/chat"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_HTML))
-                .andExpect(content().string(containsString("Chat Application - Chat")))
-                .andReturn();
+        MvcResult result = mockMvc
+            .perform(get("/chat"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(TEXT_HTML))
+            .andExpect(
+                content().string(containsString("Chat Application - Chat"))
+            )
+            .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        assertTrue(content.contains("admin1"), "Response should contain username");
+        assertTrue(
+            content.contains("admin1"),
+            "Response should contain username"
+        );
         // Admin user should see admin options
-        assertTrue(content.contains("Admin") || content.contains("admin"), 
-                "Admin user should see admin options");
+        assertTrue(
+            content.contains("Admin") || content.contains("admin"),
+            "Admin user should see admin options"
+        );
     }
 
     /**
@@ -143,9 +186,10 @@ public class WebControllerTest {
      */
     @Test
     public void testChatEndpointRedirects() throws Exception {
-        mockMvc.perform(get("/chat"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/login"));
+        mockMvc
+            .perform(get("/chat"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("**/login"));
     }
 
     /**
@@ -153,19 +197,28 @@ public class WebControllerTest {
      */
     @Test
     public void testLoginEndpoint() throws Exception {
-        MvcResult result = mockMvc.perform(get("/login"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_HTML))
-                .andExpect(content().string(containsString("Chat Application - Login")))
-                .andReturn();
+        MvcResult result = mockMvc
+            .perform(get("/login"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(TEXT_HTML))
+            .andExpect(
+                content().string(containsString("Chat Application - Login"))
+            )
+            .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        assertTrue(content.contains("Login") || content.contains("login"), 
-                "Response should contain login form");
-        assertTrue(content.contains("Username") || content.contains("username"), 
-                "Response should contain username field");
-        assertTrue(content.contains("Password") || content.contains("password"), 
-                "Response should contain password field");
+        assertTrue(
+            content.contains("Login") || content.contains("login"),
+            "Response should contain login form"
+        );
+        assertTrue(
+            content.contains("Username") || content.contains("username"),
+            "Response should contain username field"
+        );
+        assertTrue(
+            content.contains("Password") || content.contains("password"),
+            "Response should contain password field"
+        );
     }
 
     /**
@@ -174,16 +227,22 @@ public class WebControllerTest {
     @Test
     @WithUserDetails("admin1")
     public void testAdminSessionsEndpoint() throws Exception {
-        MvcResult result = mockMvc.perform(get("/admin/sessions"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_HTML))
-                .andExpect(content().string(containsString("Admin - Sessions")))
-                .andReturn();
+        MvcResult result = mockMvc
+            .perform(get("/admin/sessions"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(TEXT_HTML))
+            .andExpect(content().string(containsString("Admin - Sessions")))
+            .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        assertTrue(content.contains("admin1"), "Response should contain username");
-        assertTrue(content.contains("Sessions") || content.contains("sessions"), 
-                "Response should contain sessions information");
+        assertTrue(
+            content.contains("admin1"),
+            "Response should contain username"
+        );
+        assertTrue(
+            content.contains("Sessions") || content.contains("sessions"),
+            "Response should contain sessions information"
+        );
     }
 
     /**
@@ -191,9 +250,10 @@ public class WebControllerTest {
      */
     @Test
     public void testAdminSessionsEndpointRedirects() throws Exception {
-        mockMvc.perform(get("/admin/sessions"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/login"));
+        mockMvc
+            .perform(get("/admin/sessions"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("**/login"));
     }
 
     /**
@@ -202,8 +262,9 @@ public class WebControllerTest {
     @Test
     @WithUserDetails("user1")
     public void testAdminSessionsEndpointForbidden() throws Exception {
-        mockMvc.perform(get("/admin/sessions"))
-                .andExpect(status().isForbidden());
+        mockMvc
+            .perform(get("/admin/sessions"))
+            .andExpect(status().isForbidden());
     }
 
     /**
@@ -212,16 +273,22 @@ public class WebControllerTest {
     @Test
     @WithUserDetails("admin1")
     public void testAdminChatHistoryEndpoint() throws Exception {
-        MvcResult result = mockMvc.perform(get("/admin/chat/history"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_HTML))
-                .andExpect(content().string(containsString("Admin - Chat History")))
-                .andReturn();
+        MvcResult result = mockMvc
+            .perform(get("/admin/chat/history"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(TEXT_HTML))
+            .andExpect(content().string(containsString("Admin - Chat History")))
+            .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        assertTrue(content.contains("admin1"), "Response should contain username");
-        assertTrue(content.contains("History") || content.contains("history"), 
-                "Response should contain chat history information");
+        assertTrue(
+            content.contains("admin1"),
+            "Response should contain username"
+        );
+        assertTrue(
+            content.contains("History") || content.contains("history"),
+            "Response should contain chat history information"
+        );
     }
 
     /**
@@ -230,18 +297,26 @@ public class WebControllerTest {
     @Test
     @WithUserDetails("admin1")
     public void testAdminChatHistoryEndpointWithSessionId() throws Exception {
-        MvcResult result = mockMvc.perform(get("/admin/chat/history/test-session-id"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_HTML))
-                .andExpect(content().string(containsString("Admin - Chat History")))
-                .andReturn();
+        MvcResult result = mockMvc
+            .perform(get("/admin/chat/history/test-session-id"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(TEXT_HTML))
+            .andExpect(content().string(containsString("Admin - Chat History")))
+            .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        assertTrue(content.contains("admin1"), "Response should contain username");
-        assertTrue(content.contains("History") || content.contains("history"), 
-                "Response should contain chat history information");
-        assertTrue(content.contains("test-session-id"), 
-                "Response should contain the session ID");
+        assertTrue(
+            content.contains("admin1"),
+            "Response should contain username"
+        );
+        assertTrue(
+            content.contains("History") || content.contains("history"),
+            "Response should contain chat history information"
+        );
+        assertTrue(
+            content.contains("test-session-id"),
+            "Response should contain the session ID"
+        );
     }
 
     /**
@@ -250,16 +325,22 @@ public class WebControllerTest {
     @Test
     @WithUserDetails("admin1")
     public void testAdminUsersEndpoint() throws Exception {
-        MvcResult result = mockMvc.perform(get("/admin/users"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_HTML))
-                .andExpect(content().string(containsString("Admin - Users")))
-                .andReturn();
+        MvcResult result = mockMvc
+            .perform(get("/admin/users"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(TEXT_HTML))
+            .andExpect(content().string(containsString("Admin - Users")))
+            .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        assertTrue(content.contains("admin1"), "Response should contain username");
-        assertTrue(content.contains("Users") || content.contains("users"), 
-                "Response should contain users information");
+        assertTrue(
+            content.contains("admin1"),
+            "Response should contain username"
+        );
+        assertTrue(
+            content.contains("Users") || content.contains("users"),
+            "Response should contain users information"
+        );
     }
 
     /**
@@ -268,8 +349,12 @@ public class WebControllerTest {
      */
     @Test
     public void testWebjarsContent() throws Exception {
-        mockMvc.perform(get("/webjars/bulma/1.0.3/css/bulma.min.css"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.valueOf("text/css")));
+        mockMvc
+            .perform(get("/webjars/bulma/1.0.4/css/bulma.min.css"))
+            .andExpect(status().isOk())
+            .andExpect(
+                content()
+                    .contentTypeCompatibleWith(MediaType.valueOf("text/css"))
+            );
     }
 }
