@@ -41,21 +41,20 @@ COPY --from=builder /app/${project}/target/*.jar app.jar
 COPY --from=downloader /java /java
 ENV project=${project}
 
-RUN /java/bin/java -Djarmode=tools -jar app.jar extract --layers --launcher
+RUN /java/bin/java -Djarmode=tools -jar app.jar extract --layers --destination extracted
 
 FROM bellsoft/alpaquita-linux-base:glibc AS runner
 
 RUN apk add curl
 WORKDIR /app
 
-ENTRYPOINT ["/java/bin/java", "-XX:CacheDataStore=./application.cds", "org.springframework.boot.loader.launch.JarLauncher"]
-
 COPY --from=downloader /java /java
-COPY --from=optimizer /app/app/dependencies/ ./
-COPY --from=optimizer /app/app/spring-boot-loader/ ./
-COPY --from=optimizer /app/app/snapshot-dependencies/ ./
-COPY --from=optimizer /app/app/application/ ./
+COPY --from=optimizer /app/extracted/dependencies/ ./
+COPY --from=optimizer /app/extracted/spring-boot-loader/ ./
+COPY --from=optimizer /app/extracted/snapshot-dependencies/ ./
+COPY --from=optimizer /app/extracted/application/ ./
 
 RUN /java/bin/java -XX:CacheDataStore=./application.cds \
-    -XX:ArchiveClassesAtExit=./application.jsa \
-    -Dspring.context.exit=onRefresh org.springframework.boot.loader.launch.JarLauncher
+    -Dspring.context.exit=onRefresh -jar /app/app.jar
+
+ENTRYPOINT ["/java/bin/java", "-XX:CacheDataStore=./application.cds", "-jar", "/app/app.jar"]
