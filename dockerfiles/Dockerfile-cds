@@ -30,16 +30,16 @@ ENV project=${project}
 
 WORKDIR /app
 COPY --from=builder /app/${project}/target/*.jar app.jar
-RUN java -Djarmode=tools -jar app.jar extract --layers --launcher
+RUN java -Djarmode=tools -jar app.jar extract --layers --destination extracted
 
 
 FROM bellsoft/liberica-runtime-container:jre-21.0.7_9-cds-musl
 
 RUN apk add curl
 WORKDIR /app
-ENTRYPOINT ["java", "-Dspring.aot.enabled=true", "-XX:SharedArchiveFile=application.jsa", "org.springframework.boot.loader.launch.JarLauncher"]
-COPY --from=optimizer /app/app/dependencies/ ./
-COPY --from=optimizer /app/app/spring-boot-loader/ ./
-COPY --from=optimizer /app/app/snapshot-dependencies/ ./
-COPY --from=optimizer /app/app/application/ ./
-RUN java -Dspring.aot.enabled=true -XX:ArchiveClassesAtExit=./application.jsa -Dspring.context.exit=onRefresh org.springframework.boot.loader.launch.JarLauncher
+ENTRYPOINT ["java", "-Dspring.aot.enabled=true", "-XX:SharedArchiveFile=application.jsa", "-jar", "/app/app.jar"]
+COPY --from=optimizer /app/extracted/dependencies/ ./
+COPY --from=optimizer /app/extracted/spring-boot-loader/ ./
+COPY --from=optimizer /app/extracted/snapshot-dependencies/ ./
+COPY --from=optimizer /app/extracted/application/ ./
+RUN java -Dspring.aot.enabled=true -XX:ArchiveClassesAtExit=./application.jsa -Dspring.context.exit=onRefresh -jar /app/app.jar
