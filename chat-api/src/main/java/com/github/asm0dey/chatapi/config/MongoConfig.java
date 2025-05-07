@@ -90,16 +90,17 @@ public class MongoConfig {
         }
 
         @Override
-        public void beforeCheckpoint(Context<? extends Resource> context) throws Exception {
+        public void beforeCheckpoint(Context<? extends Resource> context) {
             mongoClientProxy.delegate.close();
         }
 
         @Override
-        public void afterRestore(Context<? extends Resource> context) throws Exception {
+        public void afterRestore(Context<? extends Resource> context) {
             mongoClientProxy.delegate = MongoClients.create(details.getConnectionString());
         }
     }
 
+    @SuppressWarnings("NullableProblems")
     static public class MongoClientProxy implements MongoClient {
         private volatile MongoClient delegate;
 
@@ -135,7 +136,7 @@ public class MongoConfig {
 
         @Override
         public ReadConcern getReadConcern() {
-            return null;
+            return delegate.getReadConcern();
         }
 
         @Override
