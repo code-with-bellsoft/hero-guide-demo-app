@@ -24,13 +24,11 @@ ADD ${project} /app/${project}
 ADD ../pom.xml ./
 RUN cd ${project} && ./mvnw -Dmaven.test.skip=true -Pcrac clean package
 
-
-FROM bellsoft/alpaquita-linux-base
+FROM bellsoft/liberica-runtime-container:jdk-21-crac-cds-musl
 
 ARG project
 ENV project=${project}
 
-RUN wget https://download.bell-sw.com/java/21.0.7+11/bellsoft-jdk21.0.7+11-linux-x64-musl-crac.apk -O /jdk.apk && apk add --allow-untrusted /jdk.apk && rm -f /jdk.apk
 WORKDIR /app
 COPY --from=builder /app/${project}/target/*.jar app.jar
 ENTRYPOINT java -XX:CRaCCheckpointTo=/app/checkpoint -jar /app/app.jar
