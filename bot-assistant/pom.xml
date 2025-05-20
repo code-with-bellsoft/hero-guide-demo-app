@@ -225,7 +225,6 @@
                             <outputDirectory>target/native</outputDirectory>
                             <mainClass>com.github.asm0dey.botassistant.BotAssistantApplication</mainClass>
                             <buildArgs>
-<!--                                <buildArg>-H:ConfigurationFileDirectories=./agent-data</buildArg>-->
                                 <buildArgs>--strict-image-heap</buildArgs>
                                 <buildArgs>--enable-monitoring=jfr</buildArgs>
                             </buildArgs>
