@@ -13,10 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-FROM bellsoft/alpaquita-linux-base:glibc AS downloader
+FROM bellsoft/alpaquita-linux-base:glibc AS mycurl
 
 RUN apk add curl tar
+
+FROM mycurl AS downloader
+
 RUN curl https://download.java.net/java/early_access/leyden/2/openjdk-24-leyden+2-8_linux-x64_bin.tar.gz -o /java.tar.gz && \
     cd / && tar -zxvf java.tar.gz && mv /jdk-24 /java && \
     rm -f /java.tar.gz
@@ -43,9 +45,8 @@ ENV project=${project}
 
 RUN /java/bin/java -Djarmode=tools -jar app.jar extract --layers --destination extracted
 
-FROM bellsoft/alpaquita-linux-base:glibc AS runner
+FROM mycurl
 
-RUN apk add curl
 WORKDIR /app
 
 COPY --from=downloader /java /java

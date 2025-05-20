@@ -1,0 +1,44 @@
+FROM bellsoft/alpaquita-linux-base:glibc AS downloader
+
+RUN apk add curl tar && curl https://download.java.net/java/early_access/leyden/2/openjdk-24-leyden+2-8_linux-x64_bin.tar.gz -o /java.tar.gz && cd / && tar -zxvf java.tar.gz && mv /jdk-24 /java
+
+FROM bellsoft/alpaquita-linux-base:glibc AS builder
+
+ARG project
+
+WORKDIR /app
+COPY --from=downloader /java /java
+ADD ../pom.xml ./
+ADD ${project} /app/${project}
+ENV JAVA_HOME=/java \
+    project=${project}
+
+RUN cd ${project} && ./mvnw -Dmaven.test.skip=true clean package
+
+FROM bellsoft/alpaquita-linux-base:glibc AS optimizer
+ARG project
+
+WORKDIR /app
+COPY --from=builder /app/${project}/target/*.jar app.jar
+COPY --from=downloader /java /java
+ENV project=${project}
+
+RUN /java/bin/java -Djarmode=tools -jar app.jar extract --layers --launcher
+
+
+FROM bellsoft/alpaquita-linux-base:glibc AS runner
+
+RUN apk add curl
+WORKDIR /app
+
+ENTRYPOINT ["/java/bin/java", "-XX:CacheDataStore=./application.cds", "org.springframework.boot.loader.launch.JarLauncher"]
+
+COPY --from=downloader /java /java
+COPY --from=optimizer /app/app/dependencies/ ./
+COPY --from=optimizer /app/app/spring-boot-loader/ ./
+COPY --from=optimizer /app/app/snapshot-dependencies/ ./
+COPY --from=optimizer /app/app/application/ ./
+
+
+RUN /java/bin/java -XX:CacheDataStore=./application.cds -Dspring.context.exit=onRefresh org.springframework.boot.loader.launch.JarLauncher
+
