@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-FROM bellsoft/liberica-runtime-container:jdk-21.0.7_9-stream-musl as builder
+FROM bellsoft/liberica-runtime-container:jdk-21.0.7_13-stream-musl as builder
 
 ARG project
 ENV project=${project}
@@ -24,7 +24,7 @@ ADD ${project} /app/${project}
 ADD ../pom.xml ./
 RUN cd ${project} && ./mvnw -Dmaven.test.skip=true clean package
 
-FROM bellsoft/liberica-runtime-container:jre-21.0.7_9-cds-musl as optimizer
+FROM bellsoft/liberica-runtime-container:jre-21.0.7_13-cds-musl as optimizer
 ARG project
 ENV project=${project}
 
@@ -33,7 +33,7 @@ COPY --from=builder /app/${project}/target/*.jar app.jar
 RUN java -Djarmode=tools -jar app.jar extract --layers --destination extracted
 
 
-FROM bellsoft/liberica-runtime-container:jre-21.0.7_9-cds-musl
+FROM bellsoft/liberica-runtime-container:jre-21.0.7_13-cds-musl
 
 RUN apk add curl
 WORKDIR /app
