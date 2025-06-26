@@ -45,7 +45,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-ai.version>1.0.0-M6</spring-ai.version>
+        <spring-ai.version>1.0.0</spring-ai.version>
         <jte.version>3.2.1</jte.version>
     </properties>
 
@@ -95,7 +95,7 @@
             <dependency>
                 <groupId>org.webjars.npm</groupId>
                 <artifactId>axios</artifactId>
-                <version>1.8.4</version>
+                <version>1.10.0</version>
             </dependency>
 
         </dependencies>
