@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-FROM bellsoft/liberica-runtime-container:jdk-21.0.7_9-stream-musl AS builder
+FROM bellsoft/liberica-runtime-container:jdk-21.0.7_13-stream-musl AS builder
 
 ARG project
 ENV project=${project}
@@ -24,7 +24,7 @@ ADD ${project} /app/${project}
 ADD ../pom.xml ./
 RUN cd ${project} && ./mvnw -Dmaven.test.skip=true -Pcrac clean package
 
-FROM bellsoft/liberica-runtime-container:jdk-21-crac-cds-musl
+FROM bellsoft/liberica-runtime-container:jdk-21.0.7_14-crac-cds-musl
 
 ARG project
 ENV project=${project}
